@@ -32,7 +32,7 @@ jobs:
 
       - name: Activate the license
         continue-on-error: true        # Add this line to get pass the error flag
-        run: unity-license-activate "${{ secrets.UNITY_EMAIL }}" "${{ secrets.UNITY_PASSWORD }}" "${{ needs.request_alf.outputs.alf }}"
+        run: unity-license-activate "${{ secrets.UNITY_EMAIL }}" "${{ secrets.UNITY_PASSWORD }}" "${{ steps.ulfRead.outputs.filePath}}"
 
       - name: Read ulf
         id: ulfRead
