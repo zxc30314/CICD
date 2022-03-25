@@ -30,7 +30,7 @@ jobs:
         run: npm install --global unity-license-activate
         
       - name: run echo
-        run: echo "${{ needs.request_alf.outputs.alf }}"
+        run: echo "${{ env.ULF_FILE }}"
       
       - name: Activate the license
         run: unity-license-activate "${{ secrets.UNITY_EMAIL }}" "${{ secrets.UNITY_PASSWORD }}" "${{  env.ULF_FILE  }}"
