@@ -14,7 +14,7 @@ env:
 jobs:
   request_alf:
     name: Request .alf file 🔑
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       alf: ${{ steps.output.outputs.alf }}
     steps:
@@ -38,7 +38,7 @@ jobs:
   acquire_ulf:
     needs: [request_alf]
     name: Acquire .ulf file 🔑
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x]
