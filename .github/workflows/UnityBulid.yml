@@ -30,8 +30,9 @@ jobs:
   activation:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'false'
-    name: Request activation file 🔑
+    name: Update License 🔑
     runs-on: ubuntu-latest
+    environment: production
     steps:
      - name: Update License
        uses: ./.github/workflows/Activation.yml
