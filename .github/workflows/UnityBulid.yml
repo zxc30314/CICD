@@ -31,7 +31,7 @@ jobs:
         with:
           lfs: true
       - name: run Upload License
-        uses: ../.github/workflows/Activation.yml
+        uses: USER_OR_ORG_NAME/REPO_NAME/.github/workflows/Activation.yml@master
   test:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
