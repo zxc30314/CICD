@@ -27,7 +27,7 @@ jobs:
     environment: production
     steps:
      - name: Update License
-       uses: ./.github/workflows/Activation.yml
+       uses: ./.github/workflows/Activation
 
   test:
     needs: [checklicense]
