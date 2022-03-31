@@ -1,9 +1,8 @@
-name: Unity Bulid
+name: Unity Actions
 
 on:
   pull_request: {}
-  workflow_dispatch:
- # push: { branches: [main, master, develop] }
+  push: { branches: [main, master, develop] }
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -24,19 +23,26 @@ jobs:
   activation:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'false'
-    name: Upload License
+    name: Request activation file 🔑
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      # Request manual activation file
+      - name: Request manual activation file
+        id: getManualLicenseFile
+        # https://github.com/game-ci/unity-request-activation-file/releases/
+        uses: game-ci/unity-request-activation-file@v2.0-alpha-1
+      # Upload artifact (Unity_v20XX.X.XXXX.alf)
+      - name: Expose as artifact
+        uses: actions/upload-artifact@v1
         with:
-          lfs: true
-      - name: run Upload License
-        uses: USER_OR_ORG_NAME/REPO_NAME/.github/workflows/Activation.yml@master
+          name: ${{ steps.getManualLicenseFile.outputs.filePath }}
+          path: ${{ steps.getManualLicenseFile.outputs.filePath }}
+
   test:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Test all modes ✨
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
         with:
@@ -64,7 +70,7 @@ jobs:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
