@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: run Upload License
-        uses: ./.github/workflows/activation
+        uses: ./.github/workflows/Activation
   test:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
