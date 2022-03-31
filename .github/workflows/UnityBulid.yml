@@ -3,14 +3,6 @@ name: Unity Actions
 on:
   pull_request: {}
   push: { branches: [main, master, develop] }
-  workflow_call:
-    inputs:
-      username:
-        required: true
-        type: string
-    secrets:
-      envPAT:
-        required: true
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
