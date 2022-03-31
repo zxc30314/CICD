@@ -1,4 +1,4 @@
-name: Unity Actions
+name: Unity Bulid
 
 on:
   pull_request: {}
@@ -27,7 +27,7 @@ jobs:
     environment: production
     steps:
      - name: Update License
-       uses: ./.github/workflows/blank.yml
+       uses: ./.github/workflows/Activation.yml
 
   test:
     needs: [checklicense]
