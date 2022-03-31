@@ -28,7 +28,7 @@ jobs:
     steps:
      - uses: actions/checkout@master
      - name: Update License
-       uses: ./.github/workflows/Activation.yml@master
+       uses: ./.github/workflows/Activation.yml
 
   test:
     needs: [checklicense]
