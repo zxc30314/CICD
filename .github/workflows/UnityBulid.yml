@@ -27,7 +27,8 @@ jobs:
     environment: production
     steps:
      - name: check path
-       run:  echo "${{./.github/workflows/}}"
+       run: |
+           echo "${{./.github/workflows/}}"
      - name: Update License
       
        uses: ./.github/workflows/Activation
