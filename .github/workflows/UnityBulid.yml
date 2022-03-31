@@ -27,7 +27,7 @@ jobs:
     name: Upload License
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - run: actions/checkout
       - name: run Upload License
         uses: ./.github/workflows/Activation.yml
   test:
