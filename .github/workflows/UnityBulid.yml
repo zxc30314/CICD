@@ -20,9 +20,9 @@ jobs:
         run: |
             echo "Skip activation job: ${{ env.UNITY_LICENSE != '' }}"
             echo "::set-output name=is_unity_license_set::${{ env.UNITY_LICENSE != '' }}"
-      - run: apt-get -y update && apt-get -y install git-lfs
-      - run: apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-      #- run: sudo service docker start
+      - run: apt-get update && apt-get install git-lfs
+      - run: apt-get remove docker docker-engine docker.io containerd runc
+      - run: sudo service docker start
   activation:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'false'
@@ -30,64 +30,72 @@ jobs:
     runs-on: self-hosted
     environment: production
     steps:
+     - uses: actions/checkout@master
      - name: Update License
        uses: ./.github/workflows/Activation.yml
-  buildAndTestForLinuxBasedPlatforms:
+
+  test:
     needs: [checklicense]
+    if: needs.checklicense.outputs.is_unity_license_set == 'true'
+    name: Test all modes ✨
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          lfs: true
+      - uses: actions/cache@v2.1.3
+        with:
+          path: Library
+          key: Library-test-project-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-test-project-
+            Library-
+      # https://github.com/game-ci/unity-test-runner/releases/
+      - uses: game-ci/unity-test-runner@v2.0-alpha-2
+        id: testRunner
+        with:
+          projectPath: ${{ env.PROJECT_PATH }}
+          testMode: all
+          customParameters: "-nographics"
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Test results (all modes)
+          path: ${{ steps.testRunner.outputs.artifactsPath }}
+
+  build:
+    needs: [checklicense]
+    if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
-        projectPath:
-          - C
-        unityVersion:
-          - 2019.4.1f1
-          - 2020.2.1f1
         targetPlatform:
-          - StandaloneLinux64 # Build a Linux 64-bit standalone.
-          - iOS # Build an iOS player.
-          - Android # Build an Android player.
-          - WebGL # WebGL.
+         # - StandaloneOSX
+         # - StandaloneWindows
+          - StandaloneWindows64
+         # - StandaloneLinux64
+         # - iOS
+          - Android
+          # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
+          # - WebGL
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
           lfs: true
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.3
         with:
           path: ${{ matrix.projectPath }}/Library
-          key:
-            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
-            hashFiles(matrix.projectPath) }}
+          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
           restore-keys: |
-            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-      #- uses: game-ci/unity-test-runner@v2
-       # id: testRunner
-        #env:
-         # UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-       # with:
-        #  projectPath: ${{ matrix.projectPath }}
-        #  unityVersion: ${{ matrix.unityVersion }}
-        #  githubToken: ${{ secrets.GITHUB_TOKEN }}
-      #- uses: actions/upload-artifact@v2
-      #  if: always()
-      #  with:
-      #    name: Test results (all modes)
-      #    path: ${{ steps.testRunner.outputs.artifactsPath }}
-      - uses: game-ci/unity-builder@v2
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      # https://github.com/game-ci/unity-builder/releases/
+      - uses: game-ci/unity-builder@v2.0-alpha-6
         with:
-          projectPath: ${{ matrix.projectPath }}
-          unityVersion: ${{ matrix.unityVersion }}
+          projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
       - uses: actions/upload-artifact@v2
         with:
-          name: Build
+          name: Build-${{ matrix.targetPlatform }}
           path: build
