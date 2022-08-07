@@ -30,6 +30,15 @@ jobs:
      - uses: actions/checkout@master
      - name: Update License
        uses: ./.github/workflows/Activation.yml
+       
+ # installGitAndDocker:
+ #  needs: [checklicense]
+ #  name: install git and Docker
+  # runs-on: self-hosted
+ #  steps:
+   #   - run: apt-get update && apt-get install git-lfs
+  #    - run: apt-get remove docker docker-engine docker.io containerd runc
+   
 
   test:
     needs: [checklicense]
@@ -59,44 +68,61 @@ jobs:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
-  build:
-    needs: [checklicense]
-    if: needs.checklicense.outputs.is_unity_license_set == 'true'
+  buildAndTestForLinuxBasedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        projectPath:
+          - test-project
+        unityVersion:
+          - 2019.4.1f1
+          - 2020.2.1f1
         targetPlatform:
-         # - StandaloneOSX
-         # - StandaloneWindows
-          - StandaloneWindows64
-         # - StandaloneLinux64
-         # - iOS
-          - Android
-          # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
-          # - WebGL
+          - StandaloneLinux64 # Build a Linux 64-bit standalone.
+          - iOS # Build an iOS player.
+          - Android # Build an Android player.
+          - WebGL # WebGL.
     steps:
-    
-      - run: apt-get update && apt-get install git-lfs
-      - run: apt-get remove docker docker-engine docker.io containerd runc
-    
       - uses: actions/checkout@v2
         with:
+          fetch-depth: 0
           lfs: true
-      - uses: actions/cache@v2.1.3
+      - uses: actions/cache@v2
         with:
           path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
+          key:
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
+            hashFiles(matrix.projectPath) }}
           restore-keys: |
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
             Library-${{ matrix.projectPath }}-
             Library-
-      # https://github.com/game-ci/unity-builder/releases/
-      - uses: game-ci/unity-builder@v2.0-alpha-6
+      - uses: game-ci/unity-test-runner@v2
+        id: testRunner
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          projectPath: ${{ env.PROJECT_PATH }}
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Test results (all modes)
+          path: ${{ steps.testRunner.outputs.artifactsPath }}
+      - uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: '-myParameter myValue -myBoolean -ThirdParameter andItsValue'
       - uses: actions/upload-artifact@v2
         with:
-          name: Build-${{ matrix.targetPlatform }}
+          name: Build
           path: build
