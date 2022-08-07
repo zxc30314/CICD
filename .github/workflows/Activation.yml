@@ -9,7 +9,7 @@ env:
   # License
   ULF_FILE: Unity_v2021.x.ulf
   # Project
-  UNITY_VERSION: 2021.2.14f1
+  UNITY_VERSION: 2021.3.4f1
 
 jobs:
   request_alf:
@@ -38,7 +38,7 @@ jobs:
   acquire_ulf:
     needs: [request_alf]
     name: Acquire .ulf file 🔑
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x]
@@ -52,8 +52,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: unstall nmp
-        run: npm cache clean --force
      
       - name: Install node package, `unity-license-activate`
         run: npm install --global unity-license-activate
