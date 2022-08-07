@@ -54,7 +54,7 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           testMode: all
           customParameters: "-nographics"
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
@@ -72,7 +72,7 @@ jobs:
          # - StandaloneWindows
           - StandaloneWindows64
          # - StandaloneLinux64
-         # - iOS
+          - iOS
           - Android
           # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
           # - WebGL
