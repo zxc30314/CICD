@@ -20,9 +20,6 @@ jobs:
         run: |
             echo "Skip activation job: ${{ env.UNITY_LICENSE != '' }}"
             echo "::set-output name=is_unity_license_set::${{ env.UNITY_LICENSE != '' }}"
-      - run: apt-get update && apt-get install git-lfs
-      - run: apt-get remove docker docker-engine docker.io containerd runc
-      #- run: sudo service docker start
   activation:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'false'
@@ -80,6 +77,10 @@ jobs:
           # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
           # - WebGL
     steps:
+    
+      - run: apt-get update && apt-get install git-lfs
+      - run: apt-get remove docker docker-engine docker.io containerd runc
+    
       - uses: actions/checkout@v2
         with:
           lfs: true
