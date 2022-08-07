@@ -55,6 +55,7 @@ jobs:
           - Android # Build an Android player.
           - WebGL # WebGL.
     steps:
+      - run: apt-get install -y tar
       - uses: actions/checkout@master
         with:
           fetch-depth: 0
