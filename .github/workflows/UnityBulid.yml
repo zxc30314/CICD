@@ -21,8 +21,8 @@ jobs:
             echo "Skip activation job: ${{ env.UNITY_LICENSE != '' }}"
             echo "::set-output name=is_unity_license_set::${{ env.UNITY_LICENSE != '' }}"
       - run: apt-get -y update && apt-get -y install git-lfs
-       - run: rm -R /var/lib/docker
       - run: apt-get remove docker docker-engine docker.io containerd runc
+      - run: rm -R /var/lib/docker
       - run: apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
       - run: sudo service docker start
   activation:
