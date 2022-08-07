@@ -38,7 +38,7 @@ jobs:
   acquire_ulf:
     needs: [request_alf]
     name: Acquire .ulf file 🔑
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [14.x]
