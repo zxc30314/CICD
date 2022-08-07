@@ -42,14 +42,11 @@ jobs:
   buildAndTestForLinuxBasedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: self-hosted
-    env:
-      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-      PROJECT_PATH: .
     strategy:
       fail-fast: false
       matrix:
         projectPath:
-          - ${{ env.PROJECT_PATH }}
+          - .
         unityVersion:
           - 2020.2.1f1
         targetPlatform:
