@@ -26,20 +26,12 @@ jobs:
   activation:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'false'
-    name: Request activation file 🔑
-    runs-on: ubuntu-latest
+    name: Update License 🔑
+    runs-on: self-hosted
+    environment: production
     steps:
-      # Request manual activation file
-      - name: Request manual activation file
-        id: getManualLicenseFile
-        # https://github.com/game-ci/unity-request-activation-file/releases/
-        uses: game-ci/unity-request-activation-file@v2
-      # Upload artifact (Unity_v20XX.X.XXXX.alf)
-      - name: Expose as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.getManualLicenseFile.outputs.filePath }}
-          path: ${{ steps.getManualLicenseFile.outputs.filePath }}
+     - name: Update License
+       uses: ./.github/workflows/Activation.yml
 
   test:
     needs: [checklicense]
