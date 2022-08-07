@@ -14,7 +14,7 @@ env:
 jobs:
   checklicense:
     name: check if UNITY_LICENSE is set in github secrets
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       is_unity_license_set: ${{ steps.checklicense_job.outputs.is_unity_license_set }}
     steps:
@@ -45,7 +45,7 @@ jobs:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Test all modes ✨
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
         with:
@@ -73,7 +73,7 @@ jobs:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
