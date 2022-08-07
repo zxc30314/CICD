@@ -4,11 +4,8 @@ on:
   pull_request: {}
   push: { branches: [main, master, develop] }
   workflow_dispatch:
-
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
   PROJECT_PATH: .
 
 jobs:
@@ -23,6 +20,9 @@ jobs:
         run: |
             echo "Skip activation job: ${{ env.UNITY_LICENSE != '' }}"
             echo "::set-output name=is_unity_license_set::${{ env.UNITY_LICENSE != '' }}"
+      - run: apt-get update && apt-get install git-lfs
+      - run: apt-get remove docker docker-engine docker.io containerd runc
+      - run: sudo service docker start
   activation:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'false'
@@ -30,18 +30,20 @@ jobs:
     runs-on: self-hosted
     environment: production
     steps:
+     - uses: actions/checkout@master
      - name: Update License
        uses: ./.github/workflows/Activation.yml
+
   test:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Test all modes ✨
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v2.1.3
         with:
           path: Library
           key: Library-test-project-${{ matrix.targetPlatform }}
@@ -49,13 +51,13 @@ jobs:
             Library-test-project-
             Library-
       # https://github.com/game-ci/unity-test-runner/releases/
-      - uses: game-ci/unity-test-runner@v2
+      - uses: game-ci/unity-test-runner@v2.0-alpha-2
         id: testRunner
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           testMode: all
           customParameters: "-nographics"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v2
         with:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
@@ -64,20 +66,24 @@ jobs:
     needs: [checklicense]
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
         targetPlatform:
-          - StandaloneLinux64
-          - iOS
+         # - StandaloneOSX
+         # - StandaloneWindows
+          - StandaloneWindows64
+         # - StandaloneLinux64
+         # - iOS
           - Android
-          - WebGL
+          # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
+          # - WebGL
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v2.1.3
         with:
           path: ${{ matrix.projectPath }}/Library
           key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
@@ -85,11 +91,11 @@ jobs:
             Library-${{ matrix.projectPath }}-
             Library-
       # https://github.com/game-ci/unity-builder/releases/
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-builder@v2.0-alpha-6
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build
