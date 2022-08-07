@@ -34,8 +34,9 @@ jobs:
        uses: ./.github/workflows/Activation.yml
 
   buildAndTestForLinuxBasedPlatforms:
+    needs: [checklicense]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
