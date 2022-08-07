@@ -40,6 +40,7 @@ jobs:
   #    - run: apt-get remove docker docker-engine docker.io containerd runc
 
   buildAndTestForLinuxBasedPlatforms:
+    needs: [checklicense]
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: self-hosted
     strategy:
