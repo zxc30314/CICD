@@ -35,12 +35,12 @@ jobs:
   buildAndTestForLinuxBasedPlatforms:
     needs: [checklicense]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
         projectPath:
-          - test-project
+          - C
         unityVersion:
           - 2019.4.1f1
           - 2020.2.1f1
