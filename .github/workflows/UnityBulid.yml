@@ -36,7 +36,7 @@ jobs:
   buildAndTestForLinuxBasedPlatforms:
     needs: [checklicense]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: elf-hosted
     strategy:
       fail-fast: false
       matrix:
