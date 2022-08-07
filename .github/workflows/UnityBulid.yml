@@ -33,6 +33,7 @@ jobs:
      - name: Update License
        uses: ./.github/workflows/Activation.yml
   build:
+    needs: [checklicense]
     name: Build my project ✨
     runs-on: self-hosted
     steps:
