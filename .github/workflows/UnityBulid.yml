@@ -87,21 +87,11 @@ jobs:
           restore-keys: |
             Library-${{ matrix.projectPath }}-
             Library-
-            
       # https://github.com/game-ci/unity-builder/releases/
-      - uses: game-ci/unity-builder@v2
+      - uses: game-ci/unity-builder@v2.1.0
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-
-      - run: apt-get install zip
-
-      - name: zip bulid file
-        run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
-         
-      - name: move build file to sever
-        run: cp ${{matrix.targetPlatform}}.zip /tmp/runner/build
-          
       - uses: actions/upload-artifact@v3
         with:
           name: Build-${{ matrix.targetPlatform }}
