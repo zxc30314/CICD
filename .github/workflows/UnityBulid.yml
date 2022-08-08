@@ -93,7 +93,7 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          buildsPath: .. ..
+          buildsPath: /tmp/runner
           
       - name: zip bulid file
         run: zip -r ${{matrix.targetPlatform}}.zip /${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
