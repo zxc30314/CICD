@@ -98,7 +98,7 @@ jobs:
         run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
          
       - name: move build file to sever
-        run: cp ${{matrix.targetPlatform}}.zip /tmp/runner/build
+        run: cp ${{matrix.targetPlatform}}.zip /tmp/build
 
       - uses: actions/upload-artifact@v3
         with:
