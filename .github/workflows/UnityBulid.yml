@@ -95,12 +95,15 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           
       - name: zip bulid file
-        uses: montudor/action-zip@v1
+        uses: thedoctor0/zip-release@main
         with:
-         args: zip -qq -r ${{matrix.targetPlatform}}.zip ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
+         type: 'zip'
+         filename: '${{matrix.targetPlatform}}.zip'
+         path: ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
+         directory: /tmp/runner/build
          
-      - name: move build file to sever
-        run: cp ${{matrix.targetPlatform}}.zip /tmp/runner/build
+     # - name: move build file to sever
+      #  run: cp ${{matrix.targetPlatform}}.zip /tmp/runner/build
           
       - uses: actions/upload-artifact@v3
         with:
