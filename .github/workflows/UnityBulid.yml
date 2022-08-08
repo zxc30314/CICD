@@ -95,7 +95,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           
       - name: zip bulid file
-        run: zip -r ${{matrix.targetPlatform}}.zip ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
+        run: zip -r ${{matrix.targetPlatform}}.zip /${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
          
       - name: move build file to sever
         run: cp ${{matrix.targetPlatform}}.zip /tmp/runner/build
