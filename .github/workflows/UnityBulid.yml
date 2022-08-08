@@ -95,12 +95,10 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           
       - name: zip bulid file
-        uses: montudor/action-zip@v1
-        with:
-         args: zip -qq -r ${{matrix.targetPlatform}}.zip ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
+        run: zip -r ${{matrix.targetPlatform}}.zip ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
          
       - name: move build file to sever
-        run: cp -r ${{matrix.targetPlatform}}.zip /tmp/runner/build
+        run: cp ${{matrix.targetPlatform}}.zip /tmp/runner/build
           
       - uses: actions/upload-artifact@v3
         with:
