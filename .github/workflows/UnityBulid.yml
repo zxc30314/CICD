@@ -93,7 +93,9 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          
+
+      - run: apt-get install zip
+
       - name: zip bulid file
         uses: thedoctor0/zip-release@main
         with:
