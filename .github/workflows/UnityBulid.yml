@@ -93,8 +93,9 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          
       - name: move build file to sever
-      - run: cp -r ${{env.PROJECT_PATH}} /tmp/runner/bulid
+        run: cp -r ${{env.PROJECT_PATH}} /tmp/runner/bulid
           
       - uses: actions/upload-artifact@v3
         with:
