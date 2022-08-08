@@ -93,10 +93,11 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          buildsPath: /tmp/runner
           
       - name: zip bulid file
-        run: zip -r ${{matrix.targetPlatform}}.zip /${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
+        uses: montudor/action-zip@v1
+        with:
+         args: zip -qq -r ${{matrix.targetPlatform}}.zip ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
          
       - name: move build file to sever
         run: cp ${{matrix.targetPlatform}}.zip /tmp/runner/build
