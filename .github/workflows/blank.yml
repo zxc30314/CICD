@@ -35,8 +35,8 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
           
-      - name: Send Discord notification
-        env:
-         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-         run: |
-         curl -H "Content-Type: application/json" -X POST -d '{"content":"GitHub Action Complete!"}' $DISCORD_WEBHOOK_URL
+      - name: Send message to Discord
+        uses: appleboy/discord-action@master
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: 'Hello from GitHub Actions!'
