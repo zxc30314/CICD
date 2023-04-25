@@ -34,7 +34,7 @@ jobs:
       - name: Output
         id: output
         run: |
-          echo "::set-output name=alf::${{ steps.alfFile.outputs.filePath }}"
+          run: echo "{alf}={steps.alfFile.outputs.filePath}" >> $GITHUB_OUTPUT
   acquire_ulf:
     needs: [request_alf]
     name: Acquire .ulf file 🔑
