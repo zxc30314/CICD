@@ -52,6 +52,9 @@ jobs:
       - name: Install node package, `unity-verify-code`
         run: npm install --global unity-verify-code
         
+      - uses: browser-actions/setup-chrome@v1
+      - run: chrome --version
+        
       - name: Activate the license
         continue-on-error: true
         run: unity-license-activate "${{ secrets.UNITY_EMAIL }}" "${{ secrets.UNITY_PASSWORD }}" "${{needs.request_alf.outputs.alf}}" --password "${{ secrets.EMAIL_PASSWORD }}"
