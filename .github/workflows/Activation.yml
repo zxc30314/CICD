@@ -43,29 +43,17 @@ jobs:
       matrix:
         node-version: [16]
     steps:
-      - name: Download .alf artifact
-        uses: actions/download-artifact@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
         with:
-          name: ${{ needs.request_alf.outputs.alf }}
-          
-      - name: install Chrome
-        uses: browser-actions/setup-chrome@latest
-      
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-     
+          node-version: '16'
+
       - name: Install node package, `unity-license-activate`
         run: npm install --global unity-license-activate
 
-      - name: Install node package, `unity-verify-code`
-        run: npm install --global unity-verify-code
-
       - name: Activate the license
-        continue-on-error: true
-        run: unity-license-activate "${{ secrets.UNITY_EMAIL }}" "${{ secrets.UNITY_PASSWORD }}" "${{ needs.request_alf.outputs.alf }}" --password "${{ secrets.EMAIL_PASSWORD }}"
-          
+        run: unity-license-activate "${{ secrets.UNITY_EMAIL }}" "${{ secrets.UNITY_PASSWORD }}" "${{ needs.request_alf.outputs.alf }}"
+
       - name: Read ulf
         id: ulfRead
         uses: juliangruber/read-file-action@v1.1.4
