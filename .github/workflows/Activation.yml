@@ -14,7 +14,7 @@ env:
 jobs:
   request_alf:
     name: Request .alf file 🔑
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       alf: ${{ steps.output.outputs.alf }}
     steps:
@@ -38,18 +38,12 @@ jobs:
   acquire_ulf:
     needs: [request_alf]
     name: Acquire .ulf file 🔑
-    runs-on: self-hosted
-    strategy:
-      matrix:
-        node-version: [16]
+    runs-on: ubuntu-latest
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '16'
-
-      - name: install Chrome
-        uses: browser-actions/setup-chrome@latest
 
       - name: Install node package, `unity-license-activate`
         run: npm install --global unity-license-activate
