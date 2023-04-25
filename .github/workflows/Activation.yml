@@ -54,7 +54,7 @@ jobs:
         
       - name: Activate the license
         continue-on-error: true
-        run: unity-license-activate "${{ secrets.UNITY_EMAIL }}" "${{ secrets.UNITY_PASSWORD }}" "${{ steps.set-output.outputs.alf }}" --password "${{ secrets.EMAIL_PASSWORD }}"
+        run: unity-license-activate "${{ secrets.UNITY_EMAIL }}" "${{ secrets.UNITY_PASSWORD }}" "${{needs.request_alf.outputs.alf}}" --password "${{ secrets.EMAIL_PASSWORD }}"
         
       - name: 🩺 Upload error screenshot
         uses: actions/upload-artifact@v3
