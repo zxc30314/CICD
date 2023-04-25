@@ -2,7 +2,7 @@ name: Unity Bulid
 
 on:
   pull_request: {}
-  push: { branches: [main, master, develop] }
+  push: {}
   workflow_dispatch:
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
