@@ -73,8 +73,8 @@ jobs:
          # - StandaloneWindows
           - StandaloneWindows64
          # - StandaloneLinux64
-          - iOS
-          - Android
+         # - iOS
+         # - Android
           # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
           # - WebGL
     steps:
