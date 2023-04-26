@@ -1,8 +1,9 @@
+
 name: Unity Bulid
 
 on:
   pull_request: {}
-  push: {}
+  push: {  }
   workflow_dispatch:
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -58,44 +59,40 @@ jobs:
         with:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
-          
-          
-  buildForAllSupportedPlatforms:
+
+  build:
+    needs: [checklicense]
+    if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
         targetPlatform:
-         # - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
-         # - StandaloneWindows # Build a Windows standalone.
-          - StandaloneWindows64 # Build a Windows 64-bit standalone.
-         # - StandaloneLinux64 # Build a Linux 64-bit standalone.
-         # - iOS # Build an iOS player.
-         # - Android # Build an Android .apk standalone app.
-         # - WebGL # WebGL.
+         # - StandaloneOSX
+         # - StandaloneWindows
+          - StandaloneWindows64
+         # - StandaloneLinux64
+          - iOS
+          - Android
+          # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
+          # - WebGL
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
           lfs: true
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
-          path: Library
-          key: Library-${{ matrix.targetPlatform }}
-          restore-keys: Library-
-      - uses: game-ci/unity-builder@v2
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-${{ matrix.projectPath }}-
+            Library-
+      # https://github.com/game-ci/unity-builder/releases/
+      - uses: game-ci/unity-builder@v2.1.0
         with:
+          projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Build-${{ matrix.targetPlatform }}
-          path: build/${{ matrix.targetPlatform }}
-
-          
-          
       - run: apt-get install zip
 
       - name: zip bulid file
