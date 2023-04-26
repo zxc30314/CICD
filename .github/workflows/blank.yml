@@ -49,5 +49,5 @@ jobs:
           DISCORD_USERNAME: 通知機器人
         uses: Ilshidur/action-discord@master
         with:
-          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed. {{TIME}}'
+          args: 'The project {{ github.repository }} has been deployed at {{ env.TIME }}'
           
