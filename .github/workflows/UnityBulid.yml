@@ -95,6 +95,7 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          git_submodules: true
       - run: apt-get install zip
 
       - name: zip bulid file
