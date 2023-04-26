@@ -78,7 +78,7 @@ jobs:
           # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
           # - WebGL
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           lfs: true
           fetch-depth: 0
