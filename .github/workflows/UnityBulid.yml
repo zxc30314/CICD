@@ -59,39 +59,50 @@ jobs:
           name: Test results (all modes)
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
-  build:
-    needs: [checklicense]
-    if: needs.checklicense.outputs.is_unity_license_set == 'true'
-    name: Build for ${{ matrix.targetPlatform }}
+  testAllModes:
+    name: Test in ${{ matrix.testMode }}
     runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
-        targetPlatform:
-         # - StandaloneOSX
-         # - StandaloneWindows
-          - StandaloneWindows64
-         # - StandaloneLinux64
-         # - iOS
-         # - Android
-          # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
-          # - WebGL
+        projectPath:
+          - test-project
+        testMode:
+          - playmode
+          - editmode
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           lfs: true
-      - uses: actions/cache@v3
+      - uses: actions/cache@v2
         with:
           path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}
+          key: Library-${{ matrix.projectPath }}
           restore-keys: |
-            Library-${{ matrix.projectPath }}-
             Library-
-      # https://github.com/game-ci/unity-builder/releases/
-      - uses: game-ci/unity-builder@v2.2.0
+      - uses: game-ci/unity-test-runner@v2
+        id: tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          projectPath: ${{ env.PROJECT_PATH }}
-          targetPlatform: ${{ matrix.targetPlatform }}
+          projectPath: ${{ matrix.projectPath }}
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ matrix.testMode }} Test Results
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*'
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Test results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Coverage results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.coveragePath }}
+          
+          
       - run: apt-get install zip
 
       - name: zip bulid file
