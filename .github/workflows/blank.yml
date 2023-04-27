@@ -47,5 +47,5 @@ jobs:
           embed-title: "The project ${{github.event.repository.full_name}} has been deployed."
           embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
           embed-description: "[${{steps.commitID.outputs.string}}](${{github.event.head_commit.url}}) ${{github.event.head_commit.message}} -${{github.event.head_commit.author.username}} [here](https://discord.com)"
-          embed-color: "#36a64f"
+          embed-color: 3559039
           embed-footer-icon-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
