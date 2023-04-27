@@ -32,12 +32,6 @@ jobs:
         with:
           format: YYYYMMDD-HHmmSS
           utcOffset: "+08:00"
-     
-      - name: Get before commitID first 7 value
-        id: commitID
-        run: |
-          output=$(echo '${{github.event.head_commit.id}}' | cut -c 1-7)
-          echo "string=$output" >> $GITHUB_OUTPUT
           
       - name: Create file
         run: |
