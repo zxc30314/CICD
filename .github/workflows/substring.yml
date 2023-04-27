@@ -25,4 +25,5 @@ jobs:
         with:
           value: "abc123"
           length_from_start: 3
+      - run: echo ${{steps.three.outputs.substring}}
 # steps.three.outputs.substring = 'abc'
