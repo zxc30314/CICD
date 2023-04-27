@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set output
-      run: echo "::set-output name=my_output::${{ substr('Hello, World!', 0, 5) }}"
+      run: echo "::set-output name=my_output::$(echo 'Hello, World!' | cut -c 1-5)}"
       
     - name: Use output
       run: echo "${{ steps.my_step.outputs.my_output}}"
