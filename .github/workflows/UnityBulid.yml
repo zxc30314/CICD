@@ -2,7 +2,8 @@
 name: Unity Bulid
 
 on:
-  pull_request: {}
+  pull_request: 
+     branches: [ "CICD" ]
   push:
     branches: [ "CICD" ]
     
