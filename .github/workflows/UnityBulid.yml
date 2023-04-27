@@ -156,7 +156,7 @@ jobs:
       - name: Set Job URL
         if: ${{!cancelled()}}
         id: jobid
-        run: echo "::set-output name=url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job }}"
+        run: echo "::set-output name=url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ github.job_ }}"
         
       - name: The job has failed
         if: ${{failure()}}
