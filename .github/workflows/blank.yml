@@ -48,14 +48,13 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          filename: events.json
-         # embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
+          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
          # embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
          # embed-description: "[``${{steps.commitID.outputs.string}}``](${{github.event.head_commit.url}}) ${{github.event.head_commit.message}} -${{github.event.head_commit.author.username}} ${{toJson(github.event)}}"
-         # embed-color: 7506394
-         # avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-         # username: GitHub
-         # embed-author-name: ${{github.event.head_commit.author.username}}
-         # embed-author-url: https://github.com/${{github.event.head_commit.author.username}}
-         # embed-author-icon-url: https://github.com/${{github.event.head_commit.author.username}}.png?size=460
+          embed-color: 7506394
+          avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          username: GitHub
+          embed-author-name: ${{github.event.sender.login}}
+          embed-author-url: ${{github.event.sender.html_url}}
+          embed-author-icon-url: ${{github.event.sender.avatar_url}}
           
