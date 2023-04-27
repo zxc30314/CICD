@@ -41,7 +41,7 @@ jobs:
 
   test:
     needs: [checklicense]
-    uses: .github/workflows/Test runner.yml@main
+    uses: ./.github/workflows/Test runner.yml
 
   build:
     needs: [checklicense]
