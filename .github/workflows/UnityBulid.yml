@@ -159,13 +159,13 @@ jobs:
           embed-author-name: ${{github.event.sender.login}}
           embed-author-url: ${{github.event.sender.html_url}}
           embed-author-icon-url: ${{github.event.sender.avatar_url}}
-              
-      - name: The job has failed
-        if: ${{failure()}}
+          
+      - name: Discord notification
+        if: ${{!cancelled()}}
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} failure"
+          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
           embed-url: "${{steps.jobs.outputs.html_url}}"
           embed-description: "[``${{steps.vars.outputs.sha_short}}``](${{steps.vars.outputs.url}}) ${{steps.vars.outputs.message}} -${{steps.vars.outputs.username}}"
           embed-color: 7506394
@@ -174,7 +174,6 @@ jobs:
           embed-author-name: ${{github.event.sender.login}}
           embed-author-url: ${{github.event.sender.html_url}}
           embed-author-icon-url: ${{github.event.sender.avatar_url}}
-        
         
           
           
