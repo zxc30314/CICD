@@ -41,7 +41,7 @@ jobs:
           
       - name: Create file
         run: |
-          echo "${toJson{github.event}}" > events.json
+          echo "${{toJson(${{github.event}})}}" > events.json
           
       # Runs a set of commands using the runners shell
       - name: Discord notification
