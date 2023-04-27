@@ -19,10 +19,12 @@ env:
 jobs:
   checklicense:
     uses: ./.github/workflows/CheckLicense.yml
+    secrets: inherit
 
   test:
     needs: [checklicense]
     uses: ./.github/workflows/Test runner.yml
+    secrets: inherit
 
   build:
     needs: [checklicense]
