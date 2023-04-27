@@ -147,7 +147,9 @@ jobs:
           
       - name: echo Current Job Log URL 
         if: ${{!cancelled()}}
-        run: echo ${{steps.jobs.outputs.html_url}}"
+        run: |
+         echo ${{github.job}}
+         echo ${{steps.jobs.outputs.html_url}}"
           
       - name: The job has Success
         if: ${{success()}}
