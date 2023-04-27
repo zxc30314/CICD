@@ -1,8 +1,9 @@
 name: Test project
 
-on:
-  workflow_dispatch:
-  workflow_call:
+on: [push, pull_request]
+ # workflow_dispatch:
+ # workflow_call:
+
 jobs:
   testAllModes:
     name: Test in ${{ matrix.testMode }}
@@ -31,10 +32,7 @@ jobs:
         with:
           projectPath: .
           testMode: ${{ matrix.testMode }}
-          artifactsPath: ${{ matrix.testMode }}-artifacts
-         # githubToken: ${{ secrets.GITHUB_TOKEN }}
-          checkName: ${{ matrix.testMode }} Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*'
+         
       - uses: actions/upload-artifact@v2
         if: always()
         with:
