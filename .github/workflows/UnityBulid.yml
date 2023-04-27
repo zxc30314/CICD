@@ -99,11 +99,30 @@ jobs:
 
       - name: zip bulid file
         run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
-         
+        
+      - name: Run a one-line script
+        run: echo Hello, world!
+      - name: Get current time
+        uses: josStorer/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYYMMDD-HHmmSS
+          utcOffset: "+08:00"
+          
       - name: move build file to sever
         run: cp ${{matrix.targetPlatform}}.zip /tmp/build
-
-      - uses: actions/upload-artifact@v3
+      - uses: bxb100/action-upload-webdav@v1
         with:
-          name: Build-${{ matrix.targetPlatform }}
-          path: build
+          webdav_address: ${{secrets.WEBDAV_ADDRESS}}
+          webdav_username: ${{secrets.WEBDAV_USERNAME}}
+          webdav_password: ${{secrets.WEBDAV_PASSWORD}}
+          webdav_upload_path: "/${{ steps.current-time.outputs.formattedTime}}"
+          files: '${{matrix.targetPlatform}}.zip'
+          
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 通知機器人
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed ${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip'
