@@ -85,7 +85,7 @@ jobs:
           # See https://github.com/game-ci/docker/issues/53 webgl will be supported in editor image v0.9
           # - WebGL
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           lfs: true
           fetch-depth: 0
@@ -102,8 +102,7 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          git_submodules: true
-
+          
       - name: zip bulid file
         run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
         
@@ -144,13 +143,7 @@ jobs:
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           job_name: "Build for ${{ matrix.targetPlatform }}"
-          
-      - name: echo Current Job Log URL 
-        if: ${{!cancelled()}}
-        run: |
-         echo ${{github.job}}
-         echo ${{steps.jobs.outputs.html_url}}"
-          
+                    
       - name: The job has Success
         if: ${{success()}}
         uses: tsickert/discord-webhook@v5.3.0
