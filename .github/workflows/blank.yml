@@ -49,6 +49,7 @@ jobs:
         run: |
           echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+          echo "::set-output name=message::$(git log -1 --no-merges --pretty=%B)"
           
       # Runs a set of commands using the runners shell
       - name: Discord notification
@@ -57,7 +58,7 @@ jobs:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
          # embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
-          embed-description: "[``${{steps.commitID.outputs.string}}``](${{github.event.head_commit.url}}) ${{github.event.head_commit.message}} -${{github.event.head_commit.author.username}} ${{steps.vars.outputs.sha_short}}}"
+          embed-description: "[``${{steps.commitID.outputs.string}}``](${{github.event.head_commit.url}}) ${{github.event.head_commit.message}} -${{github.event.head_commit.author.username}} ${{steps.vars.outputs.message}}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
