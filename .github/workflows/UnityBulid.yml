@@ -28,7 +28,6 @@ jobs:
 
   build:
     needs: [checklicense]
-    if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: self-hosted
     strategy:
