@@ -43,5 +43,5 @@ jobs:
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           content: "${{github.event.head_commit.message}}"
-          raw-data: .github/workflows/hi.json
+        
           
