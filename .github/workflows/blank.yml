@@ -41,7 +41,7 @@ jobs:
           
       - name: Create file
         run: |
-          echo "${{toJson(github.event)}}" > event.json
+          echo "${{fromJson(github.event)}}" > event.json
           
       # Runs a set of commands using the runners shell
       - name: Discord notification
@@ -49,13 +49,13 @@ jobs:
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           filename: event.json
-          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
-          embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
-          embed-description: "[``${{steps.commitID.outputs.string}}``](${{github.event.head_commit.url}}) ${{github.event.head_commit.message}} -${{github.event.head_commit.author.username}} ${{toJson(github.event)}}"
-          embed-color: 7506394
-          avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          username: GitHub
-          embed-author-name: ${{github.event.head_commit.author.username}}
-          embed-author-url: https://github.com/${{github.event.head_commit.author.username}}
-          embed-author-icon-url: https://github.com/${{github.event.head_commit.author.username}}.png?size=460
+         # embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
+         # embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
+         # embed-description: "[``${{steps.commitID.outputs.string}}``](${{github.event.head_commit.url}}) ${{github.event.head_commit.message}} -${{github.event.head_commit.author.username}} ${{toJson(github.event)}}"
+         # embed-color: 7506394
+         # avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+         # username: GitHub
+         # embed-author-name: ${{github.event.head_commit.author.username}}
+         # embed-author-url: https://github.com/${{github.event.head_commit.author.username}}
+         # embed-author-icon-url: https://github.com/${{github.event.head_commit.author.username}}.png?size=460
           
