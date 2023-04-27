@@ -171,7 +171,7 @@ jobs:
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} failure"
           embed-url: "${{steps.jobid.outputs.url}}"
           embed-description: "[``${{steps.vars.outputs.sha_short}}``](${{steps.vars.outputs.url}}) ${{steps.vars.outputs.message}} -${{steps.vars.outputs.username}}"
-          embed-color: 7506394
+          embed-color: 16711680
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
           embed-author-name: ${{github.event.sender.login}}
