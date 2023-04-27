@@ -50,3 +50,7 @@ jobs:
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
+          embed-author-name: ${{github.event.head_commit.author.username}}
+          embed-author-url: https://github.com/${{github.event.head_commit.author.username}}
+          embed-author-icon-url: https://github.com/${{github.event.head_commit.author.username}}.png?size=460
+          
