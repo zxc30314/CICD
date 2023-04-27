@@ -37,7 +37,7 @@ jobs:
         id: commitID
         run: |
           output=$(echo '${{github.event.before}}' | cut -c 1-7)
-          echo "string=$output" >> $GITHUB_STATE
+          echo "string=$output" >> $GITHUB_OUTPUT
           
       # Runs a set of commands using the runners shell
       - name: Discord notification
