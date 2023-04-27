@@ -37,5 +37,5 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          filename: hi.json
+          filename: .github/workflows/hi.json
           
