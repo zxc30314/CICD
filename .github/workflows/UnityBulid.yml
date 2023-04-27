@@ -143,7 +143,7 @@ jobs:
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           job_name: "Build for ${{ matrix.targetPlatform }}"
-                    
+       
       - name: The job has Success
         if: ${{success()}}
         uses: tsickert/discord-webhook@v5.3.0
@@ -165,7 +165,7 @@ jobs:
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} failure"
-          embed-url: "${{steps.jobid.outputs.url}}"
+          embed-url: "${{steps.jobs.outputs.html_url}}"
           embed-description: "[``${{steps.vars.outputs.sha_short}}``](${{steps.vars.outputs.url}}) ${{steps.vars.outputs.message}} -${{steps.vars.outputs.username}}"
           embed-color: 16711680
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
