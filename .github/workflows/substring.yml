@@ -7,7 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set output
-        run: echo "::set-output name=my_output::$(echo 'Hello, World!' | cut -c 1-5)"
+        run: |
+          output=$(echo 'Hello, World!' | cut -c 1-5)
+          echo "Output: $output"
+          echo "::set-output name=my_output::$output"
 
       - name: Use output
         run: echo "Output:+ ${{ steps.my_step.outputs.my_output }}"
