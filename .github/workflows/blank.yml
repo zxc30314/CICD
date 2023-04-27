@@ -49,14 +49,20 @@ jobs:
           echo "::set-output name=username::$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{github.event.repository.full_name}}/commits/$sha | jq -r '.author.login')"
           echo "::set-output name=url::https://github.com/${{github.event.repository.full_name}}/commit/$sha"
           
+      - name: Get Current Job Log URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          job_name: "${{ github.job }}"  # if job.<job-id>.name is not specified, this works too  
+          
       # Runs a set of commands using the runners shell
       - name: Discord notification
         uses: tsickert/discord-webhook@v5.3.0
         with:
-          filename: events.json
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
-          embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
+          embed-url: "${{steps.jobs.outputs.html_url}}"
           embed-description: "[``${{steps.vars.outputs.sha_short}}``](${{steps.vars.outputs.url}}) ${{steps.vars.outputs.message}} -${{steps.vars.outputs.username}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
