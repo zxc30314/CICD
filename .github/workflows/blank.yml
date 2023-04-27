@@ -52,7 +52,7 @@ jobs:
           echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
           echo "::set-output name=sha_short::$sha_short"
           echo "::set-output name=message::$(git log -1 --no-merges --pretty=%B)"
-          echo "::set-output name=username::$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{github.event.repository.full_name}}/commits/sha_short | jq -r '.author.login')"
+          echo "::set-output name=username::$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{github.event.repository.full_name}}/commits/$sha | jq -r '.author.login')"
           echo "::set-output name=url::https://github.com/${{github.event.repository.full_name}}/commit/$sha"
           
       # Runs a set of commands using the runners shell
