@@ -133,16 +133,31 @@ jobs:
           output=$(echo '${{github.event.head_commit.id}}' | cut -c 1-7)
           echo "string=$output" >> $GITHUB_OUTPUT
           
+      - name: Declare some variables
+        id: vars
+        shell: bash
+        run: |
+          sha_short=$(git rev-parse --short HEAD)
+          sha=$(git rev-parse HEAD)
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$sha_short"
+          echo "::set-output name=message::$(git log -1 --no-merges --pretty=%B)"
+          echo "::set-output name=username::$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{github.event.repository.full_name}}/commits/$sha | jq -r '.author.login')"
+          echo "::set-output name=url::https://github.com/${{github.event.repository.full_name}}/commit/$sha"
+          
+      # Runs a set of commands using the runners shell
       - name: Discord notification
         uses: tsickert/discord-webhook@v5.3.0
         with:
+          filename: events.json
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
           embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
-          embed-description: "[``${{steps.commitID.outputs.string}}``](${{github.event.head_commit.url}}) ${{github.event.head_commit.message}} -${{github.event.head_commit.author.username}}"
+          embed-description: "[``${{steps.vars.outputs.sha_short}}``](${{steps.vars.outputs.url}}) ${{steps.vars.outputs.message}} -${{steps.vars.outputs.username}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
-          embed-author-name: ${{github.event.head_commit.author.username}}
-          embed-author-url: https://github.com/${{github.event.head_commit.author.username}}
-          embed-author-icon-url: https://github.com/${{github.event.head_commit.author.username}}.png?size=460
+          embed-author-name: ${{github.event.sender.login}}
+          embed-author-url: ${{github.event.sender.html_url}}
+          embed-author-icon-url: ${{github.event.sender.avatar_url}}
+          
