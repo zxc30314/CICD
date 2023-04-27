@@ -7,11 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set output
-      - id: my_step
         run: |
           output=$(echo 'Hello, World!' | cut -c 1-5)
           echo "Output: $output"
           echo "::set-output name=my_output::$output"
-
+        id: my_step
       - name: Use output
         run: echo "Output:+ ${{ steps.my_step.outputs.my_output }}"
