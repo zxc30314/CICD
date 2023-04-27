@@ -13,7 +13,7 @@ jobs:
       matrix:
          testMode:
           - playmode
-          - editmod
+          - editmode
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,7 +33,6 @@ jobs:
           projectPath: .
           testMode: ${{ matrix.testMode }}
           artifactsPath: ${{ matrix.testMode }}-artifacts
-          githubToken: ${{ secrets.ACCESS_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
           coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+my.assembly.*'
           
