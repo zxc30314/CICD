@@ -2,7 +2,7 @@ name: Test project
 
 on:
   workflow_dispatch:
-  
+  workflow_call:
 jobs:
   testAllModes:
     name: Test in ${{ matrix.testMode }}
@@ -12,7 +12,7 @@ jobs:
       matrix:
          testMode:
           - playmode
-          - editmode
+          - editmod
     steps:
       - uses: actions/checkout@v2
         with:
