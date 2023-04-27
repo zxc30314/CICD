@@ -5,6 +5,16 @@ on:
   pull_request: {}
   push: {  }
   workflow_dispatch:
+   inputs:
+    build_id:
+      required: true
+      type: string
+    deploy_target:
+      required: true
+      type: string
+    perform_deploy:
+      required: true
+      type: boolean
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
