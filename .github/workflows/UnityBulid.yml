@@ -157,7 +157,7 @@ jobs:
         id: get_job_id
         run: |
          jobs_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs
-         job_url=${{ jobs_url }}/${{ job.id }}
+         job_url=${jobs_url}/${{ job.id }}
          job_response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $job_url)
          job_id=$(echo $job_response | jq -r '.id')"
          echo "::set-output name=url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/${{ $job_id }}"
