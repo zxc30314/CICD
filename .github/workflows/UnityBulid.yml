@@ -155,6 +155,7 @@ jobs:
               
       - name: Get Job ID
         id: get_job_id
+        if: ${{!cancelled()}}
         run: |
          jobs_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs
          job_url=${jobs_url}/${{ job.id }}
