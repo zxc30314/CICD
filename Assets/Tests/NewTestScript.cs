@@ -11,6 +11,7 @@ public class NewTestScript
     public void NewTestScriptSimplePasses()
     {
         Debug.Log("Test");
+        
         // Use the Assert class to test conditions
     }
 
