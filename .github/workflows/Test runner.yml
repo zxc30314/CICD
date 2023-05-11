@@ -37,11 +37,11 @@ jobs:
           checkName: ${{ matrix.testMode }} Test Results
           coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport'
           
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: Test results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+      # - uses: actions/upload-artifact@v2
+      #   if: always()
+      #   with:
+      #     name: Test results for ${{ matrix.testMode }}
+      #     path: ${{ steps.tests.outputs.artifactsPath }}
       - uses: actions/upload-artifact@v2
         if: always()
         with:
