@@ -3,10 +3,7 @@ name: Unity Bulid
 
 on:
   pull_request: 
-     branches: [ "CICD" ]
-  push:
-    branches: [ "CICD" ]
-    
+     branches: [ "main" ]
   workflow_dispatch:
    inputs:
     version:
