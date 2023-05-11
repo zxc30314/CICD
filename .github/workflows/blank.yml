@@ -48,7 +48,7 @@ jobs:
           echo "::set-output name=message::$(git log -1 --no-merges --pretty=%B)"
           echo "::set-output name=username::$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{github.event.repository.full_name}}/commits/$sha | jq -r '.author.login')"
           echo "::set-output name=url::https://github.com/${{github.event.repository.full_name}}/commit/$sha"
-          echo "${{toJson(${{(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{github.event.repository.full_name}}/commits/$sha)}})}}" > events.json
+          echo "$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{github.event.repository.full_name}}/commits/$sha | jq -r '.author.login')"
           
       - name: Get Current Job Log URL
         uses: Tiryoh/gha-jobid-action@v0
