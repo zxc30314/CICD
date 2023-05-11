@@ -1,0 +1,32 @@
+name: Publish Unity package to GitHub Packages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Unity
+        uses: game-ci/setup-unity@v1
+        with:
+          unityVersion: 2021.1.8f1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip
+
+      - name: Build package
+        run: |
+          unity-ci-utils build-package --project-path . --output-path MyPackage.unitypackage
+
+      - name: Publish package
+        uses: actions/upload-artifact@v2
+        with:
+          name: MyPackage
+          path: MyPackage.unitypackage
