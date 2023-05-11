@@ -10,6 +10,9 @@ public class NewTestScript
     [Test]
     public void NewTestScriptSimplePasses()
     {
+        Debug.Log("Test");
+        
+        
         // Use the Assert class to test conditions
     }
 
