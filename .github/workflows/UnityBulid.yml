@@ -32,9 +32,7 @@ jobs:
   build:
     needs: [checklicense]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on:
-      group: self-hosted
-      labels: Windows
+    runs-on: [self-hosted, Windows]
     strategy:
       fail-fast: false
       matrix:
