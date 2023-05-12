@@ -29,7 +29,7 @@ jobs:
   build:
     needs: [checklicense]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: self-hosted
+    runs-on: windows-2019
     strategy:
       fail-fast: false
       matrix:
