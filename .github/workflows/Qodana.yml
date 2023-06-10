@@ -18,4 +18,7 @@ jobs:
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@main
         env:
-         QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+         QODANA_TOKEN: ${{ secrets.QODANA }}
+         QODANA_REMOTE_URL: https://github.com/${{ github.repository }}
+         QODANA_BRANCH: ${{ github.head_ref }}
+         QODANA_JOB_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
