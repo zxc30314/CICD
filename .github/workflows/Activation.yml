@@ -71,7 +71,11 @@ jobs:
         uses: juliangruber/read-file-action@v1.1.4
         with:
           path: ${{ env.ULF_FILE }}
-
+      - name: Expose as artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ env.ULF_FILE }}
+          path: ${{ env.ULF_FILE }}
       - name: Update secret UNITY_LICENSE
         uses: hmanzur/actions-set-secret@v2.0.0
         with:
