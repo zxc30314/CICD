@@ -9,7 +9,7 @@ env:
   # License
   ULF_FILE: Unity_v2021.x.ulf
   # Project
-  UNITY_VERSION: 2021.3.30f1
+  UNITY_VERSION: 2021.3.23f1
 
 jobs:
   acquire_ulf:
