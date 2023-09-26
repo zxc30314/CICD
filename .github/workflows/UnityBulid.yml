@@ -30,7 +30,7 @@ jobs:
   build:
     needs: [checklicense]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     environment: 
       name: production
     strategy:
