@@ -12,30 +12,7 @@ env:
   UNITY_VERSION: 2021.3.30f1
 
 jobs:
-  request_alf:
-    name: Request .alf file 🔑
-    runs-on: ubuntu-latest
-    outputs:
-      alf: ${{ steps.output.outputs.alf }}
-    steps:
-      - name: Request manual activation file
-        id: alfFile
-        uses: game-ci/unity-request-activation-file@v2
-
-      # Upload artifact (Unity_v20XX.X.XXXX.alf)
-      - name: Expose as artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: ${{ steps.alfFile.outputs.filePath }}
-          path: ${{ steps.alfFile.outputs.filePath }}
-
-      - name: Output
-        id: output
-        run: |
-          echo "::set-output name=alf::${{ steps.alfFile.outputs.filePath }}"
-          
   acquire_ulf:
-    needs: [request_alf]
     name: Acquire .ulf file 🔑
     runs-on: ubuntu-latest
     steps:
@@ -50,7 +27,7 @@ jobs:
      
       - name: Activate unity
         id: ulfFile
-        uses: ./
+        uses: zxc30314/activate-unity@main
         with:
           unity-username: ${{ secrets.UNITY_USERNAME }}
           unity-password: ${{ secrets.UNITY_PASSWORD }}
