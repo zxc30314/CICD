@@ -46,7 +46,7 @@ jobs:
         id: alfFile
         uses: game-ci/unity-request-activation-file@v2
         with:
-          unityVersion: ${{ UNITY_VERSION }}
+          unityVersion: ${{ env.UNITY_VERSION }}
      
       - name: Activate unity
         id: ulfFile
