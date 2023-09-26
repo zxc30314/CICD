@@ -4,13 +4,7 @@ on:
   schedule:
   - cron: "0 0 * * 1"
   workflow_dispatch:
-
-env:
-  # License
-  ULF_FILE: Unity_v2021.x.ulf
-  # Project
-  UNITY_VERSION: 2021.3.23f1
-
+  
 jobs:
   acquire_ulf:
     name: Acquire .ulf file 🔑
@@ -18,7 +12,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        
+      - name: Get Unity Version
+        id: unity-version
+        run: |
+          echo "UNITY_VERSION=$(cat ProjectSettings/ProjectVersion.txt | grep -oP 'm_EditorVersion: \K[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
+          echo "Unity version is $UNITY_VERSION"
+          shell: bash
+          
       - name: Request .alf file 🔑
         id: alfFile
         uses: game-ci/unity-request-activation-file@v2
