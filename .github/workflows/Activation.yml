@@ -17,8 +17,7 @@ jobs:
         id: unity-version
         run: |
           echo "UNITY_VERSION=$(cat ProjectSettings/ProjectVersion.txt | grep -oP 'm_EditorVersion: \K[0-9]+\.[0-9]+\.[0-9]+')" >> $GITHUB_ENV
-          echo "Unity version is $UNITY_VERSION"
-          shell: bash
+          echo "Unity version is $UNITY_VERSION
           
       - name: Request .alf file 🔑
         id: alfFile
