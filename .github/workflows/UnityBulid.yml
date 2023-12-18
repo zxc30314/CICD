@@ -74,15 +74,15 @@ jobs:
           format: YYYYMMDD-HHmmSS
           utcOffset: "+08:00"
           
-      - name: Upload file to server
-        run: cp ${{matrix.targetPlatform}}.zip /tmp/build
-      - uses: bxb100/action-upload-webdav@v1
+      - name: Upload to WebDAV
+        uses: bxb100/action-upload@main
         with:
-          webdav_address: ${{secrets.WEBDAV_ADDRESS}}
-          webdav_username: ${{secrets.WEBDAV_USERNAME}}
-          webdav_password: ${{secrets.WEBDAV_PASSWORD}}
-          webdav_upload_path: "/${{ steps.current-time.outputs.formattedTime}}"
-          files: '${{matrix.targetPlatform}}.zip'
+          provider: webdav
+          provider_options: |
+            endpoint=${{ secrets.WEBDAV_ADDRESS }}
+            username=${{ secrets.WEBDAV_USERNAME }}
+            password=${{ secrets.WEBDAV_PASSWORD }}
+          include: '${{matrix.targetPlatform}}.zip'
           
       - name: Declare some variables
         if: ${{ !cancelled()}}
