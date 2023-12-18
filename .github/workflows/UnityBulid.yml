@@ -74,7 +74,7 @@ jobs:
           format: YYYYMMDD-HHmmSS
           utcOffset: "+08:00"
           
-      - name: move build file to sever
+      - name: Upload file to server
         run: cp ${{matrix.targetPlatform}}.zip /tmp/build
       - uses: bxb100/action-upload-webdav@v1
         with:
@@ -85,49 +85,73 @@ jobs:
           files: '${{matrix.targetPlatform}}.zip'
           
       - name: Declare some variables
-        if: ${{!cancelled()}}
-        id: vars
+        if: ${{ !cancelled()}}
         shell: bash
         run: |
-          sha_short=$(git rev-parse --short HEAD)
-          sha=$(git rev-parse HEAD)
-          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-          echo "::set-output name=sha_short::$sha_short"
-          echo "::set-output name=message::$(git log -1 --no-merges --pretty=%B)"
-           echo "::set-output name=username::$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')"
-          echo "::set-output name=url::https://github.com/${{github.event.repository.full_name}}/commit/$sha"
-          
-      - name: Get Current Job Log URL
-        if: ${{!cancelled()}}
-        uses: Tiryoh/gha-jobid-action@v0
-        id: jobs
-        with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-          job_name: "Build for ${{ matrix.targetPlatform }}"
-       
-      - name: The job has Success
+          commit_message="$(git log -1 --no-merges --pretty=%B)"
+          echo "commit_message=$commit_message" >> $GITHUB_ENV
+
+      - name: Declare some variables on pr
+        if: ${{ !cancelled() && github.event_name == 'pull_request'}}
+        shell: bash
+        run: |
+          branch_ref="${GITHUB_REF#refs/heads/}"
+          converted_ref=$(echo "$branch_ref" | sed -n 's|refs/pull/\([0-9]*\)/merge|pull/\1|p')
+          sha=${{github.event.pull_request.head.sha }}
+          sha_short=$(echo "$sha" | cut -c 1-7)
+          echo "sha_short=$env.sha_short"
+          echo "sha_short=$sha_short" >> "$GITHUB_ENV"
+          echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
+          echo "url=https://github.com/${{github.event.repository.full_name}}/$converted_ref/commits/$sha" >> "$GITHUB_ENV"
+
+      - name: Declare some variables on push
+        if: ${{ !cancelled() && env.url=='' }}
+        shell: bash
+        run: |
+          sha_short=$(git rev-parse --short "$GITHUB_SHA")
+          sha=${{ github.sha }}
+          echo "sha_short=$sha_short" >> "$GITHUB_ENV"
+          echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
+          echo "url=https://github.com/${{github.event.repository.full_name}}/commit/$sha" >> "$GITHUB_ENV"
+
+      - name: Print Variables
+        run: |
+          echo "sha_short=$env.sha_short"
+          echo "message=$env.commit_message"
+          echo "username=$env.username"
+          echo "url=$env.url"
+
+      - name: Send success message to Discord
         if: ${{success()}}
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
-          embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
-          embed-description: "[``${{steps.vars.outputs.sha_short}}``](${{steps.vars.outputs.url}}) ${{steps.vars.outputs.message}} -${{steps.vars.outputs.username}}"
+          embed-url: ${{steps.upload_file.outputs.file_link}}
+          embed-description: "[``${{env.sha_short}}``](${{env.url}}) ${{env.commit_message}} -${{env.username}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
           embed-author-name: ${{github.event.sender.login}}
           embed-author-url: ${{github.event.sender.html_url}}
           embed-author-icon-url: ${{github.event.sender.avatar_url}}
-          
-      - name: The job has failed
+
+      - name: Get current job log URL
+        if: ${{failure()}}
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          job_name: "Build for ${{ matrix.targetPlatform }}"
+
+      - name: Send failure message to Discord
         if: ${{failure()}}
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} failure"
           embed-url: "${{steps.jobs.outputs.html_url}}"
-          embed-description: "[``${{steps.vars.outputs.sha_short}}``](${{steps.vars.outputs.url}}) ${{steps.vars.outputs.message}} -${{steps.vars.outputs.username}}"
+          embed-description: "[``${{env.sha_short}}``](${{env.url}}) ${{env.commit_message}} -${{env.username}}"
           embed-color: 16711680
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub

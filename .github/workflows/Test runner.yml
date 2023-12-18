@@ -7,6 +7,7 @@ on:
 jobs:
   testAllModes:
     name: Test in ${{ matrix.testMode }}
+  #  runs-on: ubuntu-latest
     runs-on: self-hosted
     strategy:
       fail-fast: false
@@ -18,13 +19,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
           lfs: true
-      - uses: actions/cache@v3
+
+      - uses: buildjet/cache@v3
         with:
           path: Library
           key: Library-test-project-${{ matrix.targetPlatform }}
           restore-keys: |
             Library-test-project-
             Library-
+            
       - uses: game-ci/unity-test-runner@v2
         id: tests
         env:
@@ -33,17 +36,18 @@ jobs:
           projectPath: .
           testMode: ${{ matrix.testMode }}
           artifactsPath: ${{ matrix.testMode }}-artifacts
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport'
+          githubToken: ${{ secrets.GITHUB_TOKEN  }}
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Script,+Tests'
           
-      # - uses: actions/upload-artifact@v2
-      #   if: always()
-      #   with:
-      #     name: Test results for ${{ matrix.testMode }}
-      #     path: ${{ steps.tests.outputs.artifactsPath }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: Coverage results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.coveragePath }}
+          name: Test results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
+
+      # - uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: Coverage results for ${{ matrix.testMode }}
+      #     path: ${{ steps.tests.outputs.coveragePath }}
