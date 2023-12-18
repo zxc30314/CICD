@@ -115,12 +115,7 @@ jobs:
           echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
           echo "url=https://github.com/${{github.event.repository.full_name}}/commit/$sha" >> "$GITHUB_ENV"
 
-      - name: Print Variables
-        run: |
-          echo "sha_short=$env.sha_short"
-          echo "message=$env.commit_message"
-          echo "username=$env.username"
-          echo "url=$env.url"
+   
 
       - name: Send success message to Discord
         if: ${{success()}}
@@ -143,8 +138,15 @@ jobs:
         id: jobs
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
-          job_name: "Build for ${{matrix.targetPlatform}}"
-
+          job_name: "Build for ${{ matrix.targetPlatform }}"
+      - name: Print Variables
+        if: ${{ !cancelled()}}
+        run: |
+          echo "sha_short=$env.sha_short"
+          echo "message=$env.commit_message"
+          echo "username=$env.username"
+          echo "url=$env.url"
+          echo "${{steps.jobs.outputs.html_url}}"
       - name: Send failure message to Discord
         if: ${{failure()}}
         uses: tsickert/discord-webhook@v5.3.0
