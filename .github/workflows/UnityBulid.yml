@@ -84,7 +84,7 @@ jobs:
           webdav_username: ${{ secrets.WEBDAV_USERNAME }}
           webdav_password: ${{ secrets.WEBDAV_PASSWORD }}
           webdav_upload_path: /${{ steps.current-time.outputs.formattedTime}}
-          files: "${{env.PROJECT_PATH}}/build/**"
+          files: '${{matrix.targetPlatform}}.zip'
           
       - name: Declare some variables
         if: ${{ !cancelled()}}
@@ -129,7 +129,7 @@ jobs:
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
-          embed-url: ${{steps.upload_file.outputs.file_link}}
+          embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
           embed-description: "[``${{env.sha_short}}``](${{env.url}}) ${{env.commit_message}} -${{env.username}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
