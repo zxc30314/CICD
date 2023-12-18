@@ -8,6 +8,9 @@ on:
       - synchronize
     branches: 
       - 'main'
+  push:
+    branches:
+      - 'main'
   workflow_dispatch:
    inputs:
     version:
@@ -30,7 +33,7 @@ jobs:
   build:
     needs: [checklicense]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     environment: 
       name: production
     strategy:
@@ -74,14 +77,13 @@ jobs:
           format: YYYYMMDD-HHmmSS
           utcOffset: "+08:00"
           
-      - name: Upload file to server
-        run: cp ${{matrix.targetPlatform}}.zip /tmp/build
-      - uses: bxb100/action-upload-webdav@v1
+      - name: Upload to WebDAV
+        uses: bxb100/action-upload-webdav@v1
         with:
-          webdav_address: ${{secrets.WEBDAV_ADDRESS}}
-          webdav_username: ${{secrets.WEBDAV_USERNAME}}
-          webdav_password: ${{secrets.WEBDAV_PASSWORD}}
-          webdav_upload_path: "/${{ steps.current-time.outputs.formattedTime}}"
+          webdav_address: ${{ secrets.WEBDAV_ADDRESS }}
+          webdav_username: ${{ secrets.WEBDAV_USERNAME }}
+          webdav_password: ${{ secrets.WEBDAV_PASSWORD }}
+          webdav_upload_path: /${{ steps.current-time.outputs.formattedTime}}
           files: '${{matrix.targetPlatform}}.zip'
           
       - name: Declare some variables
@@ -127,7 +129,7 @@ jobs:
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
-          embed-url: ${{steps.upload_file.outputs.file_link}}
+          embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
           embed-description: "[``${{env.sha_short}}``](${{env.url}}) ${{env.commit_message}} -${{env.username}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
