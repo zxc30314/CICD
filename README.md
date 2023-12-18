@@ -1,4 +1,8 @@
-## secrets 
+Audo Build Unity project on `push` `pull request opened` `pull request synchronize` time
+
+Notify to discord server on build success or fail
+
+## Secrets 
 
 ### `ACCESS_TOKEN`
  Github Personal Access Tockens Access Required
