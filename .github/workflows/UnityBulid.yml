@@ -78,7 +78,7 @@ jobs:
           utcOffset: "+08:00"
           
       - name: Upload to WebDAV
-      - uses: bxb100/action-upload@main
+        uses: bxb100/action-upload@main
         with:
           provider: webdav
           provider_options: |
