@@ -78,15 +78,13 @@ jobs:
           utcOffset: "+08:00"
           
       - name: Upload to WebDAV
-        uses: bxb100/action-upload@main
+        uses: tszalbot/action-upload-webdav@v1
         with:
-          provider: webdav
-          provider_options: |
-            endpoint=${{ secrets.WEBDAV_ADDRESS }}
-            username=${{ secrets.WEBDAV_USERNAME }}
-            password=${{ secrets.WEBDAV_PASSWORD }}
-            root=/${{ steps.current-time.outputs.formattedTime}}/
-          include: '${{ steps.current-time.outputs.formattedTime}}/**'
+          webdav_address: ${{ secrets.WEBDAV_ADDRESS }}
+          webdav_username: ${{ secrets.WEBDAV_USERNAME }}
+          webdav_password: ${{ secrets.WEBDAV_PASSWORD }}
+          webdav_upload_path: /${{ steps.current-time.outputs.formattedTime}}
+          files: "${{matrix.targetPlatform}}.zip"
           
       - name: Declare some variables
         if: ${{ !cancelled()}}
