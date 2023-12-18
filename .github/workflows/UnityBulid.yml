@@ -78,7 +78,7 @@ jobs:
           utcOffset: "+08:00"
           
       - name: Upload to WebDAV
-        uses: tszalbot/action-upload-webdav@v1
+        uses: bxb100/action-upload-webdav@v1
         with:
           webdav_address: ${{ secrets.WEBDAV_ADDRESS }}
           webdav_username: ${{ secrets.WEBDAV_USERNAME }}
