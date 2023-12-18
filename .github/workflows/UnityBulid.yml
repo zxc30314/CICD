@@ -78,7 +78,9 @@ jobs:
           utcOffset: "+08:00"
           
       - name: Upload to WebDAV
-        run: cp ${{matrix.targetPlatform}}.zip /${{ steps.current-time.outputs.formattedTime}}
+        run: |
+          mkdir ${{ steps.current-time.outputs.formattedTime}}
+          cp ${{matrix.targetPlatform}}.zip /${{ steps.current-time.outputs.formattedTime}}
         
       - uses: bxb100/action-upload@main
         with:
