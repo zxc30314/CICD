@@ -15,6 +15,10 @@
   
 ### `UNITY_LICENSE`
   Don't  Input any value
+### `DISCORD_WEBHOOK`
+  Required Discord Server WebHook url
+  
+  How to get [Discord WebHook url](https://gist.github.com/jagrosh/5b1761213e33fc5b54ec7f6379034a22)
 ### `WEBDAV_ADDRESS`
   Required Webdav Server address
 ### `WEBDAV_USERNAME`
