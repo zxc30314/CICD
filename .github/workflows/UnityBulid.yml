@@ -78,10 +78,6 @@ jobs:
           utcOffset: "+08:00"
           
       - name: Upload to WebDAV
-        run: |
-          mkdir ${{ steps.current-time.outputs.formattedTime}}
-          cp ${{matrix.targetPlatform}}.zip /${{ steps.current-time.outputs.formattedTime}}
-        
       - uses: bxb100/action-upload@main
         with:
           provider: webdav
@@ -89,7 +85,8 @@ jobs:
             endpoint=${{ secrets.WEBDAV_ADDRESS }}
             username=${{ secrets.WEBDAV_USERNAME }}
             password=${{ secrets.WEBDAV_PASSWORD }}
-          include: '__${{ steps.current-time.outputs.formattedTime}}__/**'
+            root=/${{ steps.current-time.outputs.formattedTime}}/
+          include: '${{matrix.targetPlatform}}.zip'
           
       - name: Declare some variables
         if: ${{ !cancelled()}}
