@@ -16,6 +16,7 @@ Notify to discord server on build success or fail
   Required Unity password
 ### `UNITY_LICENSE`
   Required Unity License
+  
   How to get Unity [License](https://game.ci/docs/github/activation) 
 ### `DISCORD_WEBHOOK`
   Required Discord Server WebHook url
