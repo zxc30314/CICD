@@ -690,6 +690,9 @@
      <Reference Include="UnityEngine.UI">
      <HintPath>C:\Users\zxc30\Documents\GitHub\CICD\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
      </Reference>
+     <Reference Include="spine-csharp">
+     <HintPath>C:\Users\zxc30\Documents\GitHub\CICD\Library\ScriptAssemblies\spine-csharp.dll</HintPath>
+     </Reference>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

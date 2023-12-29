@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.esotericsoftware.spine.spine-csharp": {
+      "version": "https://github.com/EsotericSoftware/spine-runtimes.git?path=spine-csharp/src#4.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "26c142e8623c2a8ecc71a8df5aedf0bff8797da4"
+    },
     "com.neuecc.unirx": {
       "version": "7.1.0",
       "depth": 0,
