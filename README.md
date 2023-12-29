@@ -28,10 +28,3 @@ Notify to discord server on build success or fail
   Required Webdav Server address
 ### `WEBDAV_PASSWORD`
   Required Webdav Server address
-
-# How to get Unity authenticator key
-* Go to https://id.unity.com/en/settings/tfa/new  and click `Start setup`
-* Select `Authenticator App` and click `Next`
-* Click `Can't scan the barcode?`
-* Save authenticator key
-* Verify activation with Google Authenticator or other Authenticator app
