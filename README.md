@@ -10,17 +10,13 @@ Notify to discord server on build success or fail
  Github Personal Access Tockens Access Required
  * Read access to actions, code, and metadata
  * Read and Write access to secrets
-### `UNITY_USERNAME`
-  Required Unity email or username
+### `UNITY_EMAIL`
+  Required Unity email
 ### `UNITY_PASSWORD`
   Required Unity password
-### `UNITY_AUTHENTICATOR_KEY`
-  Required Unity Authenictor key
-  
-  How to get [authenticator key](#How-to-get-Unity-authenticator-key)
-  
 ### `UNITY_LICENSE`
-  Don't  Input any value
+  Required Unity License
+  How to get Unity [License](https://game.ci/docs/github/activation) 
 ### `DISCORD_WEBHOOK`
   Required Discord Server WebHook url
   
