@@ -31,7 +31,7 @@ jobs:
     secrets: inherit
 
   build:
-    needs: [checklicense]
+    needs: [checklicense,test]
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: self-hosted
     environment: 
@@ -62,7 +62,11 @@ jobs:
             Library-
       # https://github.com/game-ci/unity-builder/releases/
    
-      - uses: game-ci/unity-builder@v2.1.0
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
