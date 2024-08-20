@@ -87,7 +87,7 @@ jobs:
           webdav_address: ${{ secrets.WEBDAV_ADDRESS }}
           webdav_username: ${{ secrets.WEBDAV_USERNAME }}
           webdav_password: ${{ secrets.WEBDAV_PASSWORD }}
-          webdav_upload_path: /${{ steps.current-time.outputs.formattedTime}}
+          webdav_upload_path: ${{ steps.current-time.outputs.formattedTime}}
           files: '${{matrix.targetPlatform}}.zip'
 
       - name: Declare some variables
