@@ -86,10 +86,9 @@ jobs:
         with:
           provider: webdav
           provider_options: |
-            endpoint=${{ secrets.WEBDAV_ENDPOINT }}
+            endpoint=${{ secrets.WEBDAV_ADDRESS }}
             username=${{ secrets.WEBDAV_USERNAME }}
             password=${{ secrets.WEBDAV_PASSWORD }}
-            root=/${{ steps.current-time.outputs.formattedTime}}
           include: '*.zip'
 
       - name: Declare some variables
