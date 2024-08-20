@@ -25,6 +25,6 @@ Notify to discord server on build success or fail
 ### `WEBDAV_ADDRESS`
   Required Webdav Server address
 ### `WEBDAV_USERNAME`
-  Required Webdav Server address
+  Required Webdav Server username
 ### `WEBDAV_PASSWORD`
-  Required Webdav Server address
+  Required Webdav Server password
