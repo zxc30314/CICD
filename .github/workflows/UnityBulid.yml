@@ -28,16 +28,16 @@ jobs:
   build:
     needs: [test]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: [ self-hosted, "${{ matrix.os }}" ]
+    runs-on: [  "${{ matrix.os }}" ]
     environment: 
       name: production
     strategy:
       fail-fast: false
       matrix:
         include:
-         - os: Linux
+         - os: ubuntu-latest
            targetPlatform: Android
-         - os: Windows
+         - os: windows-2022
            targetPlatform: StandaloneWindows64
          # - StandaloneOSX
          # - StandaloneWindows
