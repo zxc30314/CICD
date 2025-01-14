@@ -28,19 +28,21 @@ jobs:
   build:
     needs: [test]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: self-hosted
+    runs-on: [ self-hosted, "${{ matrix.os }}" ]
     environment: 
       name: production
     strategy:
       fail-fast: false
       matrix:
-        targetPlatform:
+        include:
+         - os: Linux
+           targetPlatform: Android
+         - os: Windows
+           targetPlatform: StandaloneWindows64
          # - StandaloneOSX
          # - StandaloneWindows
-          - StandaloneWindows64
          # - StandaloneLinux64
          # - iOS
-         # - Android
          # - WebGL
     steps:
       - uses: actions/checkout@v3
