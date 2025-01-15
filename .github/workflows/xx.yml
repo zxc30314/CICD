@@ -73,7 +73,7 @@ jobs:
         
     - name: Declare variables based on Push event for Windows on Push
       if: ${{  !cancelled() && runner.os == 'Windows' && github.event_name == 'push' }}
-      shell: bash
+      shell: powershell
       run: |
             $sha_short = git rev-parse --short $env:GITHUB_SHA
             Write-Host "sha_short=$sha_short" >> $env:GITHUB_ENV
