@@ -105,7 +105,7 @@ jobs:
       if: ${{  !cancelled() && runner.os == 'Windows' && github.event_name == 'push' }}
       shell: powershell
       run: |
-            $sha=${{ github.sha }} 
+            $sha= "${{ github.sha }}"
             $sha_short = git rev-parse --short $env:GITHUB_SHA
             $url = "https://github.com/${{ github.event.repository.full_name }}/commit/$sha"
             Write-Host "url=$url" >> $env:GITHUB_ENV
