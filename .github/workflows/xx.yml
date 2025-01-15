@@ -87,7 +87,9 @@ jobs:
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} 
 
-    - name: Display the commit message
+    - name: Print Variables
       run: |
-        echo "The commit message is: $commit_message"
-        echo "Event name: ${{ github.event_name }}"
+          echo "sha_short=$env.sha_short"
+          echo "message=$env.commit_message"
+          echo "username=$env.username"
+          echo "url=$env.url"
