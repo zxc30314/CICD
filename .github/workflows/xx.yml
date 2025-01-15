@@ -27,6 +27,7 @@ jobs:
       run: |
         commit_message=$(git log -1 --no-merges --pretty=%B)
         echo "commit_message=$commit_message" >> $GITHUB_ENV
+        echo $commit_message
 
     - name: Declare variables based on Pull Request event type for Linux
       if: ${{  !cancelled() && runner.os == 'Linux' && github.event_name == 'pull_request' }}
@@ -36,27 +37,39 @@ jobs:
           sha_short=$(echo "$sha" | cut -c 1-7)
           branch_ref="${GITHUB_REF#refs/heads/}"
           converted_ref=$(echo "$branch_ref" | sed -n 's|refs/pull/\([0-9]*\)/merge|pull/\1|p')
-          echo "sha_short=$sha_short" >> "$GITHUB_ENV"
           url="https://github.com/${{ github.event.repository.full_name }}/$converted_ref/commits/$sha";
-          echo "url=https://github.com/${{ github.event.repository.full_name }}/$converted_ref/commits/$sha" >> "$GITHUB_ENV"
-          echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
+          username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')
+          echo "sha_short=$sha_short" >> "$GITHUB_ENV"
+          echo "url=$url" >> "$GITHUB_ENV"
+          echo "username=$username" >> "$GITHUB_ENV"
+          echo $sha
+          echo $sha_short
+          echo $converted_ref
           echo $url
+          echo $username
 
     - name: Declare variables based on Push event for Linux
       if: ${{  !cancelled() && runner.os == 'Linux' && github.event_name == 'push' }}
       shell: bash
       run: |
           sha=${{ github.sha }}
-          echo "sha_short=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
-          echo "url=https://github.com/${{ github.event.repository.full_name }}/commit/$sha" >> "$GITHUB_ENV"
-          echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
-    
+          url=https://github.com/${{ github.event.repository.full_name }}/commit/$sha" >> "$GITHUB_ENV
+          sha_short=$(git rev-parse --short "$GITHUB_SHA")" 
+          username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')
+          echo "sha_short=$sha_short">> "$GITHUB_ENV
+          echo "url=$url" >> "$GITHUB_ENV"
+          echo "username=$username" >> "$GITHUB_ENV"
+          echo $sha
+          echo $sha_short
+          echo $url
+          echo $username
     - name: Declare variables for Windows
       if: ${{!cancelled() && runner.os == 'Windows' }}
       shell: powershell
       run: |
             $commit_message = $(git log -1 --no-merges --pretty=%B)
             Write-Host "commit_message=$commit_message" >> $env:GITHUB_ENV
+            Write-Host $commit_message
               
     - name: Declare variables based on Pull Request event type for Windows 
       if: ${{ !cancelled() && runner.os == 'Windows' && github.event_name == 'pull_request'}}
@@ -76,7 +89,14 @@ jobs:
             }
             $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha" -Headers $authHeader    
             $username = $response.author.login
+            Write-Host "sha_short=$sha_short">> "$GITHUB_ENV
             Write-Host "username=$username" >> $env:GITHUB_ENV
+            Write-Host "url=$url" >> $env:GITHUB_ENV
+            Write-Host $sha
+            Write-Host $sha_short
+            Write-Host $converted_ref
+            Write-Host $url
+            Write-Host $username
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         PULL_REQUEST_SHA : ${{ github.event.pull_request.head.sha }}
@@ -85,18 +105,17 @@ jobs:
       if: ${{  !cancelled() && runner.os == 'Windows' && github.event_name == 'push' }}
       shell: powershell
       run: |
+            $sha=${{ github.sha }} 
             $sha_short = git rev-parse --short $env:GITHUB_SHA
             $url = "https://github.com/${{ github.event.repository.full_name }}/commit/$env:GITHUB_SHA"
             Write-Host "url=$url" >> $env:GITHUB_ENV
             $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha" -Headers $authHeader
             $username = $response.author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
+            Write-Host "url=$url" >> $env:GITHUB_ENV
+            Write-Host $sha
+            Write-Host $sha_short
+            Write-Host $url
+            Write-Host $username
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} 
-
-    - name: Print Variables
-      run: |
-          echo "sha_short=$env.sha_short"
-          echo "message=$env.commit_message"
-          echo "username=$env.username"
-          echo "url=$env.url"
