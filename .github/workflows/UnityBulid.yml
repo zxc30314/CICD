@@ -57,7 +57,14 @@ jobs:
           restore-keys: |
             Library-${{ matrix.projectPath }}-
             Library-
-      
+      - name: Check for errors
+        shell: pwsh
+        run: |
+          # Example condition where we trigger an error
+          if ($env:SOME_ENV_VAR -eq "fail") {
+              Write-Host "Error: Something went wrong"
+              exit 1 # or throw "Something went wrong"
+          }
       - name: Get Commit Info
         uses: zxc30314/git-commit-info@main
         id: info
