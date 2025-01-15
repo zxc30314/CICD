@@ -7,14 +7,16 @@ on:
 jobs:
   modify-settings:
     runs-on: Windows  # 使用 Windows 环境来执行 PowerShell 脚本
-
+    env:
+      PROJECT_PATH: .
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
     - name: Modify ProjectSettings.asset file
       run: |
-        $projectSettingsFilePath = "${{env.PROJECT_PATH}}\\ProjectSettings\\ProjectSettings.asset"
+        ls -Force ${env.PROJECT_PATH}
+        $projectSettingsFilePath = "${env.PROJECT_PATH}\\ProjectSettings\\ProjectSettings.asset"
         # 检查路径是否正确
         Write-Output "Project Settings file path: $projectSettingsFilePath"
         $fileContent = Get-Content -Path $projectSettingsFilePath
