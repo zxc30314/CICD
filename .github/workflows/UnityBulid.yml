@@ -21,26 +21,6 @@ on:
         options:
           - build
           - failure test
-      scripting_backend:
-        description: 'Scripting Backend'
-        required: true
-        default: 'il2cpp'
-        type: choice
-        options:
-          - il2cpp
-          - mono
-      build_pc:
-        description: 'PC'
-        required: false
-        type: boolean
-        default: true
-      build_android:
-        description: 'Android'
-        required: false
-        type: boolean
-        default: true
-      environment:
-          type: environment
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
@@ -66,7 +46,6 @@ jobs:
             targetPlatform: Android
           - os: Windows
             targetPlatform: StandaloneWindows64
-
          # - StandaloneOSX
          # - StandaloneWindows
          # - StandaloneLinux64
