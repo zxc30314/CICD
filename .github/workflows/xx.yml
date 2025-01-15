@@ -11,7 +11,7 @@ on:
 
 jobs:
   declare_variables:
-    runs-on: Windows
+    runs-on: Linux
 
     steps:
     - name: Checkout repository
