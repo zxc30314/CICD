@@ -1,114 +1,124 @@
 PlayerSettings:
-  platformArchitecture: {}
-  scriptingBackend:
-    Standalone: 0
-  il2cppCompilerConfiguration: {}
+  cloudEnabled: 0
   managedStrippingLevel:
-    EmbeddedLinux: 1
-    GameCoreScarlett: 1
-    GameCoreXboxOne: 1
-    Lumin: 1
-    Nintendo Switch: 1
-    PS4: 1
-    PS5: 1
-    Stadia: 1
-    WebGL: 1
+    tvOS: 1
     Windows Store Apps: 1
+    WebGL: 1
+    Stadia: 1
     XboxOne: 1
     iPhone: 1
-    tvOS: 1
-  incrementalIl2cppBuild: {}
-  suppressCommonWarnings: 1
-  allowUnsafeCode: 0
-  useDeterministicCompilation: 1
-  enableRoslynAnalyzers: 1
-  selectedPlatform: 0
-  additionalIl2CppArgs: 
+    Lumin: 1
+    GameCoreScarlett: 1
+    GameCoreXboxOne: 1
+    EmbeddedLinux: 1
+    PS4: 1
+    Nintendo Switch: 1
+    PS5: 1
   scriptingRuntimeVersion: 1
-  gcIncremental: 1
   assemblyVersionValidation: 1
-  gcWBarrierValidation: 0
-  apiCompatibilityLevelPerPlatform: {}
-  m_RenderingPath: 1
-  m_MobileRenderingPath: 1
-  metroPackageName: Template_3D
-  metroPackageVersion: 
-  metroCertificatePath: 
-  metroCertificatePassword: 
-  metroCertificateSubject: 
-  metroCertificateIssuer: 
-  metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: Template_3D
-  wsaImages: {}
-  metroTileShortName: 
-  metroTileShowName: 0
-  metroMediumTileShowName: 0
-  metroLargeTileShowName: 0
-  metroWideTileShowName: 0
-  metroSupportStreamingInstall: 0
-  metroLastRequiredScene: 0
-  metroDefaultTileSize: 1
-  metroTileForegroundText: 2
-  metroTileBackgroundColor: {r: 0.13333334, g: 0.17254902, b: 0.21568628, a: 0}
-  metroSplashScreenBackgroundColor: {r: 0.12941177, g: 0.17254902, b: 0.21568628, a: 1}
   metroSplashScreenUseBackgroundColor: 0
-  platformCapabilities: {}
-  metroTargetDeviceFamilies: {}
-  metroFTAName: 
-  metroFTAFileTypes: []
-  metroProtocolName: 
-  vcxProjDefaultLanguage: 
-  XboxOneProductId: 
-  XboxOneUpdateKey: 
-  XboxOneSandboxId: 
-  XboxOneContentId: 
-  XboxOneTitleId: 
-  XboxOneSCId: 
-  XboxOneGameOsOverridePath: 
-  XboxOnePackagingOverridePath: 
-  XboxOneAppManifestOverridePath: 
-  XboxOneVersion: 1.0.0.0
-  XboxOnePackageEncryption: 0
-  XboxOnePackageUpdateGranularity: 2
-  XboxOneDescription: 
-  XboxOneLanguage:
-  - enus
-  XboxOneCapability: []
-  XboxOneGameRating: {}
-  XboxOneIsContentPackage: 0
-  XboxOneEnhancedXboxCompatibilityMode: 0
-  XboxOneEnableGPUVariability: 1
-  XboxOneSockets: {}
-  XboxOneSplashScreen: {fileID: 0}
-  XboxOneAllowedProductIds: []
-  XboxOnePersistentLocalStorageSize: 0
-  XboxOneXTitleMemory: 8
   XboxOneOverrideIdentityName: 
-  XboxOneOverrideIdentityPublisher: 
+  luminCert:
+    m_SignPackage: 1
+    m_CertPath: 
+  metroPackageName: Template_3D
+  activeInputHandler: 0
+  allowUnsafeCode: 0
+  organizationId: 
+  XboxOneProductId: 
+  gcIncremental: 1
+  metroDefaultTileSize: 1
+  XboxOnePackageEncryption: 0
+  XboxOnePackagingOverridePath: 
+  incrementalIl2cppBuild: {}
+  metroCertificatePassword: 
+  XboxOneAllowedProductIds: []
+  luminIsChannelApp: 0
+  cloudProjectId: 
+  metroCertificateSubject: 
+  apiCompatibilityLevel: 6
+  metroFTAFileTypes: []
+  XboxOneIsContentPackage: 0
+  XboxOneVersion: 1.0.0.0
+  XboxOneSplashScreen:
+    fileID: 0
+  XboxOneUpdateKey: 
+  metroFTAName: 
+  scriptingBackend:
+    Standalone: 1
+  metroTileForegroundText: 2
+  wsaImages: {}
+  metroTargetDeviceFamilies: {}
   vrEditorSettings: {}
+  metroTileBackgroundColor:
+    b: 0.21568628
+    g: 0.17254902
+    r: 0.13333334
+    a: 0
+  metroWideTileShowName: 0
+  metroPackageVersion: 
+  forceSRGBBlit: 1
+  enableRoslynAnalyzers: 1
+  XboxOnePersistentLocalStorageSize: 0
+  XboxOneAppManifestOverridePath: 
+  metroTileShowName: 0
+  il2cppCompilerConfiguration: {}
   cloudServicesEnabled:
     UNet: 1
+  XboxOneXTitleMemory: 8
+  metroSupportStreamingInstall: 0
   luminIcon:
     m_Name: 
-    m_ModelFolderPath: 
     m_PortalFolderPath: 
-  luminCert:
-    m_CertPath: 
-    m_SignPackage: 1
-  luminIsChannelApp: 0
-  luminVersion:
-    m_VersionCode: 1
-    m_VersionName: 
-  apiCompatibilityLevel: 6
-  activeInputHandler: 0
-  windowsGamepadBackendHint: 0
-  cloudProjectId: 
-  framebufferDepthMemorylessMode: 0
-  qualitySettingsNames: []
-  projectName: 
-  organizationId: 
-  cloudEnabled: 0
-  legacyClampBlendShapeWeights: 0
-  playerDataPath: 
-  forceSRGBBlit: 1
+    m_ModelFolderPath: 
+  platformCapabilities: {}
   virtualTexturingSupportEnabled: 0
+  metroLastRequiredScene: 0
+  XboxOneTitleId: 
+  apiCompatibilityLevelPerPlatform: {}
+  useDeterministicCompilation: 1
+  legacyClampBlendShapeWeights: 0
+  XboxOneGameOsOverridePath: 
+  metroProtocolName: 
+  XboxOneSockets: {}
+  platformArchitecture: {}
+  qualitySettingsNames: []
+  windowsGamepadBackendHint: 0
+  gcWBarrierValidation: 0
+  metroMediumTileShowName: 0
+  XboxOnePackageUpdateGranularity: 2
+  luminVersion:
+    m_VersionName: 
+    m_VersionCode: 1
+  metroCertificateIssuer: 
+  playerDataPath: 
+  XboxOneSandboxId: 
+  additionalIl2CppArgs: 
+  XboxOneEnableGPUVariability: 1
+  metroCertificateNotAfter: 0
+  XboxOneGameRating: {}
+  metroLargeTileShowName: 0
+  selectedPlatform: 0
+  metroTileShortName: 
+  m_RenderingPath: 1
+  metroSplashScreenBackgroundColor:
+    b: 0.21568628
+    g: 0.17254902
+    r: 0.12941177
+    a: 1
+  XboxOneLanguage:
+  - enus
+  vcxProjDefaultLanguage: 
+  XboxOneEnhancedXboxCompatibilityMode: 0
+  XboxOneContentId: 
+  metroCertificatePath: 
+  framebufferDepthMemorylessMode: 0
+  m_MobileRenderingPath: 1
+  XboxOneSCId: 
+  XboxOneCapability: []
+  XboxOneOverrideIdentityPublisher: 
+  projectName: 
+  XboxOneDescription: 
+  suppressCommonWarnings: 1
+
