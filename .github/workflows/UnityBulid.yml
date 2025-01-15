@@ -75,7 +75,9 @@ jobs:
         if: ${{ matrix.os == 'Linux' }}
         run: zip -r "${{ matrix.targetPlatform }}.zip" "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}"   
           
-     
+      - name: Get Git Commit Info
+        uses: ./.github/workflows/Get Git Commit Info.yml
+    
       - name: Get current time
         uses: josStorer/get-current-time@v2
         id: current-time
@@ -92,42 +94,6 @@ jobs:
           webdav_upload_path: /${{ steps.current-time.outputs.formattedTime}}
           files: '${{matrix.targetPlatform}}.zip'
 
-      - name: Declare some variables
-        if: ${{ !cancelled()}}
-        shell: bash
-        run: |
-          commit_message="$(git log -1 --no-merges --pretty=%B)"
-          echo "commit_message=$commit_message" >> $GITHUB_ENV
-
-      - name: Declare some variables on pr
-        if: ${{ !cancelled() && github.event_name == 'pull_request'}}
-        shell: bash
-        run: |
-          branch_ref="${GITHUB_REF#refs/heads/}"
-          converted_ref=$(echo "$branch_ref" | sed -n 's|refs/pull/\([0-9]*\)/merge|pull/\1|p')
-          sha=${{github.event.pull_request.head.sha }}
-          sha_short=$(echo "$sha" | cut -c 1-7)
-          echo "sha_short=$env.sha_short"
-          echo "sha_short=$sha_short" >> "$GITHUB_ENV"
-          echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
-          echo "url=https://github.com/${{github.event.repository.full_name}}/$converted_ref/commits/$sha" >> "$GITHUB_ENV"
-
-      - name: Declare some variables on push
-        if: ${{ !cancelled() && env.url=='' }}
-        shell: bash
-        run: |
-          sha_short=$(git rev-parse --short "$GITHUB_SHA")
-          sha=${{ github.sha }}
-          echo "sha_short=$sha_short" >> "$GITHUB_ENV"
-          echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
-          echo "url=https://github.com/${{github.event.repository.full_name}}/commit/$sha" >> "$GITHUB_ENV"
-
-      - name: Print Variables
-        run: |
-          echo "sha_short=$env.sha_short"
-          echo "message=$env.commit_message"
-          echo "username=$env.username"
-          echo "url=$env.url"
 
       - name: Send success message to Discord
         if: ${{success()}}
