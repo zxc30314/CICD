@@ -18,19 +18,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-
-    - name: Declare some variables for Linux
-      if: ${{ !cancelled() && runner.os == 'Linux' }}
-      shell: pwsh
-      run: |
-          commit_message=$(git log -1 --no-merges --pretty=%B)
-          echo "commit_message=$commit_message" >> $GITHUB_ENV
-          echo $commit_message
-
     - name: Declare variables
       if: ${{ !cancelled() }}
       shell: pwsh
       run: |
+       $commit_message = git log -1 --no-merges --pretty=%B
+       echo "commit_message=$commit_message" >> $env:GITHUB_ENV
+       Write-Host "Commit Message: $commit_message"
         if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
           $sha = "${{ github.event.pull_request.head.sha }}"
           $sha_short = $sha.Substring(0, 7)
