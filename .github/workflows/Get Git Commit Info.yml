@@ -1,11 +1,8 @@
 name: Git Commit Info
 
-on:
-  push:
-  pull_request:
-    types:
-      - opened
-      - synchronize
+on: 
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   declare_variables:
