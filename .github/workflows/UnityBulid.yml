@@ -24,10 +24,7 @@ jobs:
   test:
     uses: ./.github/workflows/Test runner.yml
     secrets: inherit
-  get_info:
-    uses: ./.github/workflows/Get Git Commit Info.yml    
-    secrets: inherit   
-
+    
   build:
     needs: [test]
     name: Build for ${{ matrix.targetPlatform }}
