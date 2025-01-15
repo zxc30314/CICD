@@ -18,7 +18,7 @@ jobs:
 
     - name: Declare some variables
       if: ${{ !cancelled() }}
-      shell: powershell
+      shell: pwsh
       run: |
         if ($env:RUNNER_OS -eq "Windows") {
             # Windows 环境中的 PowerShell 语法
