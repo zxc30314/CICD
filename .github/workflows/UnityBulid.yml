@@ -107,9 +107,9 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
+          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{matrix.targetPlatform}} has been deployed."
           embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
-          embed-description: "[``${{steps.info.sha_short}}``](${{steps.info.url}}) ${{steps.info.commit_message}} -${{steps.info.username}}"
+          embed-description: "[``${{steps.info.outputs.sha_short}}``](${{steps.info.outputs.url}}) ${{steps.info.outputs.commit_message}} -${{steps.info.outputs.username}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
@@ -130,9 +130,9 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} failure"
+          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} ${{matrix.targetPlatform}} failure"
           embed-url: "${{steps.jobs.outputs.html_url}}"
-          embed-description: "[``${{steps.info.sha_short}}``](${{steps.info.url}}) ${{steps.info.commit_message}} -${{steps.info.username}}"
+          embed-description: "[``${{steps.info.outputs.sha_short}}``](${{steps.info.outputs.url}}) ${{steps.info.outputs.commit_message}} -${{steps.info.outputs.username}}"
           embed-color: 16711680
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
