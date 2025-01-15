@@ -21,7 +21,7 @@ on:
         options:
           - build
           - failure test
-      scripting backend:
+      scripting_backend:
         description: 'Scripting Backend'
         required: true
         default: 'il2cpp'
@@ -29,12 +29,12 @@ on:
         options:
           - il2cpp
           - mono
-      build pc:
+      build_pc:
         description: 'PC'
         required: false
         type: boolean
         default: true
-      build android:
+      build_android:
         description: 'Android'
         required: false
         type: boolean
@@ -45,7 +45,7 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
   SOME_ENV_VAR: ${{ github.event.inputs.target }}
-  SCRIPTING_BACKEND: ${{ github.event.inputs.scripting backend }}
+  SCRIPTING_BACKEND: ${{ github.event.inputs.scripting_backend }}
 jobs:
   test:
     uses: ./.github/workflows/Test runner.yml
@@ -61,10 +61,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-         - os: Linux
-           targetPlatform: Android
-         - os: Windows
-           targetPlatform: StandaloneWindows64
+          - os: ${{ github.event.inputs.scripting_backend == 'mono' && 'ubuntu-latest' || 'windows-latest' }}
+            targetPlatform: ${{ github.event.inputs.build_android == 'true' && 'Android' || '' }}
+          - os: ${{ github.event.inputs.scripting_backend == 'mono' && 'ubuntu-latest' || 'windows-latest' }}
+            targetPlatform: ${{ github.event.inputs.build_pc == 'true' && 'StandaloneWindows64' || '' }}
+
          # - StandaloneOSX
          # - StandaloneWindows
          # - StandaloneLinux64
