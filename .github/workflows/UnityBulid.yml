@@ -75,13 +75,11 @@ jobs:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
           
-      - name: Zip build file on Windows
-        if: ${{ matrix.os == 'Windows' }}
-        run: Compress-Archive -Path "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}/*" -DestinationPath "${{ matrix.targetPlatform }}.zip"
-        
-      - name: Zip build file on Linux
-        if: ${{ matrix.os == 'Linux' }}
-        run: zip -r "${{ matrix.targetPlatform }}.zip" "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}"   
+      - name: Zip build file 
+        run: |
+          $source = "./${{ matrix.targetPlatform }}"
+          $destination = "./${{ matrix.targetPlatform }}.zip"
+          Compress-Archive -Path $source -DestinationPath $destination
           
 
     
