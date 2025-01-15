@@ -45,7 +45,7 @@ jobs:
 
         $commit_message = git log -1 --no-merges --pretty=%B
         $authHeader = @{
-          "Authorization" = "Bearer ${{ secret.ACCESS_TOKEN }}"
+          "Authorization" = "Bearer ${{ secrets.ACCESS_TOKEN }}"
           "Accept" = "application/vnd.github.v3+json"
         }
         $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/commits/$sha" -Headers $authHeader
