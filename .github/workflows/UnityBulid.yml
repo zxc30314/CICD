@@ -102,16 +102,14 @@ jobs:
         with:
             ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
             
-      - name: Build Project
-        shell: pwsh
+      - name: Modify ProjectSettings.asset file
         run: |
-              if ($env:SCRIPTING_BACKEND -eq "il2cpp") {
-                Write-Host "Building with IL2CPP on $($env:RUNNER_OS) for $($env:TARGETPLATFORM)"
-                /opt/unity/Editor/Unity -batchmode -nographics -quit -projectPath $env:PROJECT_PATH -buildTarget $env:TARGETPLATFORM -executeMethod BuildScript.PerformBuild -ScriptingBackend IL2CPP
-              } else {
-                Write-Host "Building with Mono on $($env:RUNNER_OS) for $($env:TARGETPLATFORM)"
-                /opt/unity/Editor/Unity -batchmode -nographics -quit -projectPath $env:PROJECT_PATH -buildTarget $env:TARGETPLATFORM -executeMethod BuildScript.PerformBuild -ScriptingBackend Mono
-              }          
+          $projectSettingsFilePath = "${{ env.PROJECT_PATH }}\\ProjectSettings\\ProjectSettings.asset"
+          $fileContent = Get-Content -Path $projectSettingsFilePath
+          $fileContent = $fileContent -replace '(scriptingBackend:\s*)(Standalone:\s*)0', '$1$21'
+          Set-Content -Path $projectSettingsFilePath -Value $fileContent
+        shell: pwsh
+      
       # https://github.com/game-ci/unity-builder/releases/
 
       - uses: game-ci/unity-builder@v4
