@@ -68,7 +68,7 @@ jobs:
           
           Write-Host "WebDAV URL: $webdavUrl"
           Write-Host "Target Directory: $targetDir"
-          
+          Write-Host "checkDirUrl : $checkDirUrl"
           # 创建认证凭据对象
           $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
 
