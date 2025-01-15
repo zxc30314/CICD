@@ -68,9 +68,12 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           
       - name: zip bulid file
-        run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
-        # run: Compress-Archive -Path ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}/* -Destination ${{matrix.targetPlatform}}.zip
-        
+        run: |
+           if [ "${{ matrix.os }}" == "Windows" ]; then
+               Compress-Archive -Path "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}/*" -DestinationPath "${{ matrix.targetPlatform }}.zip"
+           elif [ "${{ matrix.os }}" == "Linux" ]; then
+               zip -r "${{ matrix.targetPlatform }}.zip" "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}"
+                
       - name: Get current time
         uses: josStorer/get-current-time@v2
         id: current-time
