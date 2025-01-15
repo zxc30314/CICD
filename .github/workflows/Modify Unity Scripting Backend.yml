@@ -56,19 +56,13 @@ jobs:
           FILE_PATH: "./ProjectSettings/ProjectSettings.asset"  # 要上传的文件路径
           TARGET_DIR: "/AAA"  # WebDAV 服务器上的目标文件夹路径
       run: |
-          $webdavUrl = "$($env:WEBDAV_URL.TrimEnd('/'))"
-          $username = $env:WEBDAV_USERNAME
-          $password = $env:WEBDAV_PASSWORD
-          $filePath = $env:FILE_PATH
-          $targetDir = "$($env:TARGET_DIR.TrimStart('/'))"
-
-          # 拼接 URL
-          $checkDirUrl = "$webdavUrl$targetDir"
-          $uploadUrl = "$checkDirUrl/$(Split-Path -Leaf $filePath)"
+          $baseUri = [System.Uri]::new($webdavUrl)
+          $targetDirUri = [System.Uri]::new($baseUri, $targetDir + '/')  # 拼接目标目录 URL
+          $fileUri = [System.Uri]::new($targetDirUri, (Split-Path -Leaf $filePath))  # 拼接目标文件 URL
           
-          Write-Host "WebDAV URL: $webdavUrl"
-          Write-Host "Target Directory: $targetDir"
-          Write-Host "checkDirUrl : $checkDirUrl"
+          Write-Host "WebDAV URL: $baseUri"
+          Write-Host "Target Directory: $targetDirUri"
+          Write-Host "URL : $fileUri"
           # 创建认证凭据对象
           $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
 
