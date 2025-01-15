@@ -24,7 +24,7 @@ on:
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
-  SOME_ENV_VAR: github.event.inputs.target
+  SOME_ENV_VAR: ${{ github.event.inputs.target }}
 
 jobs:
   test:
