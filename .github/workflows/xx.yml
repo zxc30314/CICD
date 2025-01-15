@@ -109,6 +109,10 @@ jobs:
             $sha_short = git rev-parse --short $env:GITHUB_SHA
             $url = "https://github.com/${{ github.event.repository.full_name }}/commit/$sha"
             Write-Host "url=$url" >> $env:GITHUB_ENV
+            $authHeader = @{
+                "Authorization" = "Bearer ${{secrets.ACCESS_TOKEN}}"
+                "Accept" = "application/vnd.github.v3+json"
+            }
             $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha" -Headers $authHeader
             $username = $response.author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
