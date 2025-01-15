@@ -12,7 +12,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
+    - name: Test DNS resolution
+      run: |
+        nslookup ${{ secrets.WEBDAV_ADDRESS }}
     - name: Install YAML module
       run: |
         # 安装 powershell-yaml 模块
@@ -63,7 +65,10 @@ jobs:
           # 拼接 URL
           $checkDirUrl = "$webdavUrl$targetDir"
           $uploadUrl = "$checkDirUrl/$(Split-Path -Leaf $filePath)"
-
+          
+          Write-Host "WebDAV URL: $webdavUrl"
+          Write-Host "Target Directory: $targetDir"
+          
           # 创建认证凭据对象
           $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
 
