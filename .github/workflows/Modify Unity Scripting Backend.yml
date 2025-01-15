@@ -51,7 +51,7 @@ jobs:
           WEBDAV_URL: ${{ secrets.WEBDAV_ADDRESS }}        # WebDAV 服务器 URL
           WEBDAV_USERNAME: ${{ secrets.WEBDAV_USERNAME }}  # WebDAV 用户名
           WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}  # WebDAV 密码
-          FILE_PATH: "./$ProjectSettings/ProjectSettings.asset"  # 要上传的文件路径
+          FILE_PATH: "./ProjectSettings/ProjectSettings.asset"  # 要上传的文件路径
           TARGET_DIR: "/AAA"  # 目标文件夹路径
       run: |
           $webdavUrl = $env:WEBDAV_URL
