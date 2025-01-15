@@ -18,7 +18,7 @@ jobs:
 
     - name: Declare some variables
       if: ${{ !cancelled() }}
-      shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
+      shell: ${{ matrix.os == 'Windows' && 'powershell' || 'bash' }}  # 根据操作系统选择 shell
       run: |
         if ($env:RUNNER_OS -eq "Windows") {
             # Windows 环境中的 PowerShell 语法
