@@ -7,7 +7,6 @@ on:
       - opened
       - synchronize
 
-
 jobs:
   declare_variables:
     runs-on: ${{ matrix.os }}
@@ -97,9 +96,7 @@ jobs:
             Write-Host $converted_ref
             Write-Host $url
             Write-Host $username
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        
+
     - name: Declare variables based on Push event for Windows on Push
       if: ${{  !cancelled() && runner.os == 'Windows' && github.event_name == 'push' }}
       shell: powershell
@@ -120,5 +117,3 @@ jobs:
             Write-Host $sha_short
             Write-Host $url
             Write-Host $username
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} 
