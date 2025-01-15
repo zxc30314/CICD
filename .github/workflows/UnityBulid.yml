@@ -21,11 +21,14 @@ on:
         options:
           - build
           - failure test
-      Useil2cpp:
-        description: 'il2cpp'
-        required: false
-        type: boolean
-        default: true
+      scripting backend:
+        description: 'Scripting Backend'
+        required: true
+        default: 'il2cpp'
+        type: choice
+        options:
+          - il2cpp
+          - mono
       build pc:
         description: 'PC'
         required: false
