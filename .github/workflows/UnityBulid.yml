@@ -24,6 +24,9 @@ jobs:
   test:
     uses: ./.github/workflows/Test runner.yml
     secrets: inherit
+  get_info:
+    uses: ./.github/workflows/Get Git Commit Info.yml    
+    secrets: inherit   
 
   build:
     needs: [test]
@@ -58,8 +61,7 @@ jobs:
             Library-
       # https://github.com/game-ci/unity-builder/releases/
     
-      - name: Get Git Commit Info
-        uses: ./.github/workflows/Get Git Commit Info.yml
+
       
       - uses: game-ci/unity-builder@v4
         env:
