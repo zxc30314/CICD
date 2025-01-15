@@ -2,8 +2,7 @@ name: Git Commit Info
 
 on:
   push:
-    branches:
-      - main
+
 
 jobs:
   declare_variables:
