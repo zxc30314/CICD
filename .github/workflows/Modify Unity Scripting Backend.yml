@@ -68,11 +68,6 @@ jobs:
           $targetDirUri = [System.Uri]::new($baseUri, $targetDir + '/')  # 拼接目标目录 URL
           $fileUri = [System.Uri]::new($targetDirUri, (Split-Path -Leaf $filePath))  # 拼接目标文件 URL
           
-          # 输出调试信息
-          Write-Host "Base URL: $baseUri"
-          Write-Host "Target Directory URL: $targetDirUri"
-          Write-Host "File Upload URL: $fileUri"
-          
           # 创建凭据
           $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
           
