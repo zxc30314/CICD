@@ -16,18 +16,22 @@ jobs:
     - name: Modify ProjectSettings.asset file
       run: |
         ls -Force ${env.PROJECT_PATH}
-        $projectSettingsFilePath = "${env.PROJECT_PATH}\ProjectSettings\ProjectSettings.asset"
-        # 检查路径是否正确
-        Write-Output "Project Settings file path: $projectSettingsFilePath"
-        $fileContent = Get-Content -Path $projectSettingsFilePath
+        $relativePath = "ProjectSettings\\ProjectSettings.asset"
+        $fileContent = Get-Content -Path $relativePath
+        
+        # 输出文件内容
+        Write-Output "File content:"
+        Write-Output $fileContent
+        
+        # 执行替换操作
         $fileContent = $fileContent -replace '(scriptingBackend:\s*)(Standalone:\s*)0', '$1$2 1'
-
+        
         # 输出修改后的内容
         Write-Output "Modified content:"
         Write-Output $fileContent
 
-        # 将修改后的内容保存回文件
-        Set-Content -Path $projectSettingsFilePath -Value $fileContent
+        # 保存修改后的内容
+        Set-Content -Path $relativePath -Value $fileContent
       shell: pwsh
       env:
         PROJECT_PATH: ${{ secrets.PROJECT_PATH }}  # 通过 GitHub Secrets 管理项目路径
