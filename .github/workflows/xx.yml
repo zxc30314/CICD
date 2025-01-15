@@ -68,7 +68,12 @@ jobs:
             Write-Host "sha_short=$sha_short" >> $env:GITHUB_ENV
             $url = "https://github.com/${{ github.event.repository.full_name }}/$converted_ref/commits/$sha"
             Write-Host "url=$url" >> $env:GITHUB_ENV
-            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
+            $authHeader = @{
+                "Authorization" = "Bearer $env:ACCESS_TOKEN"
+                "Accept" = "application/vnd.github.v3+json"
+            }
+            $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha" -Headers $authHeader    
+            $username = $response.author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} 
