@@ -68,8 +68,8 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           
       - name: zip bulid file
-       # run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
-        run: Compress-Archive -Path ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}/* -Destination ${{matrix.targetPlatform}}.zip
+        run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
+        # run: Compress-Archive -Path ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}/* -Destination ${{matrix.targetPlatform}}.zip
         
       - name: Get current time
         uses: josStorer/get-current-time@v2
