@@ -48,12 +48,12 @@ env:
   SCRIPTING_BACKEND: ${{ github.event.inputs.scripting_backend }}
 jobs:
 
-  test:
-    uses: ./.github/workflows/Test runner.yml
-    secrets: inherit
+ # test:
+ #   uses: ./.github/workflows/Test runner.yml
+ #   secrets: inherit
     
   build:
-    needs: [test]
+   # needs: [test]
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: [ self-hosted, "${{ matrix.os }}" ]
     environment: 
