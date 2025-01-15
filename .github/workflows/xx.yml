@@ -77,9 +77,9 @@ jobs:
             $sha_short = $sha.Substring(0, 7)
             Write-Host "sha_short=$sha_short"
             Write-Host "sha_short=$sha_short" >> $env:GITHUB_ENV
-            $url = "https://github.com/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/$converted_ref/commits/$sha"
+            $url = "https://github.com/${{ github.event.repository.full_name }}/$converted_ref/commits/$sha"
             Write-Host "url=$url" >> $env:GITHUB_ENV
-            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$sha" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
+            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
           }
       
@@ -87,9 +87,9 @@ jobs:
           elseif ($env:GITHUB_EVENT_NAME -eq "push" -and -not $env:url) {
             $sha_short = git rev-parse --short $env:GITHUB_SHA
             Write-Host "sha_short=$sha_short" >> $env:GITHUB_ENV
-            $url = "https://github.com/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commit/$env:GITHUB_SHA"
+            $url = "https://github.com/${{ github.event.repository.full_name }}/commit/$env:GITHUB_SHA"
             Write-Host "url=$url" >> $env:GITHUB_ENV
-            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$env:GITHUB_SHA" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
+            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$env:GITHUB_SHA" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
           }
 
