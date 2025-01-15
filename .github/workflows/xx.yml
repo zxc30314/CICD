@@ -38,7 +38,7 @@ jobs:
           echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
           
     - name: Declare variables based on Push event for Linux on Push
-      if: ${{  !cancelled() && runner.os == 'Linux' $$ github.event_name == 'push' }}
+      if: ${{  !cancelled() && runner.os == 'Linux' && github.event_name == 'push' }}
       shell: bash
       run: |
           sha=${{ github.sha }}
@@ -72,7 +72,7 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} 
         
     - name: Declare variables based on Push event for Windows on Push
-      if: ${{  !cancelled() && runner.os == 'Windows' $$ github.event_name == 'push' }}
+      if: ${{  !cancelled() && runner.os == 'Windows' && github.event_name == 'push' }}
       shell: bash
       run: |
             $sha_short = git rev-parse --short $env:GITHUB_SHA
