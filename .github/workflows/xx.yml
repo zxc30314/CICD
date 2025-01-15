@@ -18,7 +18,7 @@ jobs:
 
     - name: Declare some variables for Windows
       if: ${{ runner.os == 'Windows' }}
-      shell: powershell
+      shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }} 
       run: |
         $commit_message = $(git log -1 --no-merges --pretty=%B)
         echo "commit_message=$commit_message" >> $env:GITHUB_ENV
