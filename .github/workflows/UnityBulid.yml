@@ -69,9 +69,7 @@ jobs:
           
       - name: zip bulid file
        # run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
-        uses: montudor/action-zip@v1
-        with:
-            args: zip -qq -r ${{matrix.targetPlatform}}.zip ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
+        run: Compress-Archive -Path ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}/* -Destination ${{matrix.targetPlatform}}.zip
         
       - name: Get current time
         uses: josStorer/get-current-time@v2
