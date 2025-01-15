@@ -121,7 +121,7 @@ jobs:
           WEBDAV_USERNAME: ${{ secrets.WEBDAV_USERNAME }}  
           WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}  
           FILE_PATH: "./${{matrix.targetPlatform}}.zip"
-          TARGET_DIR: "/${{ steps.current-time.outputs.formattedTime}}"
+          TARGET_DIR: "${{ steps.current-time.outputs.formattedTime}}"
         run: |
           $webdavUrl = $env:WEBDAV_URL.TrimEnd('/')
           $username = $env:WEBDAV_USERNAME
@@ -132,7 +132,8 @@ jobs:
           $baseUri = [System.Uri]::new($webdavUrl)
           $targetDirUri = [System.Uri]::new($baseUri, $targetDir + '/') 
           $fileUri = [System.Uri]::new($targetDirUri, (Split-Path -Leaf $filePath))  
-          
+          Write-Output "$targetDirUri"
+          Write-Output "$fileUri"
           $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
           
           try {
