@@ -13,6 +13,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Install YAML module
+      run: |
+        # 安装 powershell-yaml 模块
+        Install-Module -Name powershell-yaml -Force -Scope CurrentUser
+        
     - name: Modify ProjectSettings.asset file
       run: |
         # 使用相对路径读取文件内容
