@@ -12,14 +12,19 @@ on:
     branches:
       - 'main'
   workflow_dispatch:
-   inputs:
-    version:
-      required: true
-      type: string
+    inputs:
+      target:
+        description: 'Choose a target'
+        required: true
+        default: 'build'
+        type: choice
+        options:
+          - build
+          - failure test
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
-  SOME_ENV_VAR: "fail"  # 设置环境变量
+  SOME_ENV_VAR: github.event.inputs.target
 
 jobs:
   test:
@@ -58,15 +63,18 @@ jobs:
           restore-keys: |
             Library-${{ matrix.projectPath }}-
             Library-
+            
       - name: Check for errors
         shell: pwsh
         run: |
           # Example condition where we trigger an error
-          if ($env:SOME_ENV_VAR -eq "fail") {
+          if ($env:SOME_ENV_VAR -eq "failure test") {
               Write-Host "Error: Something went wrong"
               exit 1 # or throw "Something went wrong"
           }
+          
       - name: Get Commit Info
+        if: ${{ !cancelled() }}
         uses: zxc30314/git-commit-info@main
         id: info
         with:
