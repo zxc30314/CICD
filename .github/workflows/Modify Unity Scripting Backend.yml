@@ -52,35 +52,45 @@ jobs:
           WEBDAV_USERNAME: ${{ secrets.WEBDAV_USERNAME }}  # WebDAV 用户名
           WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}  # WebDAV 密码
           FILE_PATH: "./ProjectSettings/ProjectSettings.asset"  # 要上传的文件路径
-          TARGET_DIR: "./AAA"  # 目标文件夹路径
+          TARGET_DIR: "/AAA"  # WebDAV 服务器上的目标文件夹路径
       run: |
-          $webdavUrl = $env:WEBDAV_URL
+          $webdavUrl = "$($env:WEBDAV_URL.TrimEnd('/'))"
           $username = $env:WEBDAV_USERNAME
           $password = $env:WEBDAV_PASSWORD
           $filePath = $env:FILE_PATH
-          $targetDir = $env:TARGET_DIR
-          # 创建 WebClient 实例
-          $webClient = New-Object System.Net.WebClient
-          $webClient.Credentials = New-Object System.Net.NetworkCredential($username, $password)
+          $targetDir = "$($env:TARGET_DIR.TrimStart('/'))"
+
+          # 拼接 URL
+          $checkDirUrl = "$webdavUrl$targetDir"
+          $uploadUrl = "$checkDirUrl/$(Split-Path -Leaf $filePath)"
+
+          # 创建认证凭据对象
+          $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
+
+          # 检查目录是否存在
           try {
-              # 创建目标目录 (MKCOL)
               Write-Host "Checking if directory exists: $targetDir"
-              $checkDirUrl = "$webdavUrl$targetDir"
-              try {
-                  # 尝试请求目录，查看是否存在
-                  $webClient.OpenRead($checkDirUrl) | Out-Null
+              $response = Invoke-WebRequest -Uri $checkDirUrl -Credential $credentials -Method Head -ErrorAction Stop
+              if ($response.StatusCode -eq 200) {
                   Write-Host "Directory exists."
-              } catch {
-                  Write-Host "Directory does not exist, creating directory..."
-                  # 目录不存在，创建目录
-                  $webClient.UploadString("$webdavUrl$targetDir", "MKCOL", "")
-                  Write-Host "Directory created."
               }
-              # 上传文件
+          } catch [System.Net.WebException] {
+              if ($_.Exception.Response.StatusCode -eq 404) {
+                  Write-Host "Directory does not exist, creating it..."
+                  Invoke-WebRequest -Uri $checkDirUrl -Credential $credentials -Method MKCOL -ErrorAction Stop
+                  Write-Host "Directory created successfully."
+              } else {
+                  Write-Host "Unexpected error: $($_.Exception.Message)"
+                  exit 1
+              }
+          }
+
+          # 上传文件
+          try {
               Write-Host "Uploading file to WebDAV..."
-              $webClient.UploadFile("$webdavUrl$targetDir/$(Split-Path -Leaf $filePath)", "PUT", $filePath)
+              Invoke-WebRequest -Uri $uploadUrl -Credential $credentials -Method Put -InFile $filePath -ErrorAction Stop
               Write-Host "File uploaded successfully."
           } catch {
-              Write-Host "Error: $($_.Exception.Message)"
+              Write-Host "Error during file upload: $($_.Exception.Message)"
               exit 1
           }
