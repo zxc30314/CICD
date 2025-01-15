@@ -37,9 +37,11 @@ jobs:
           branch_ref="${GITHUB_REF#refs/heads/}"
           converted_ref=$(echo "$branch_ref" | sed -n 's|refs/pull/\([0-9]*\)/merge|pull/\1|p')
           echo "sha_short=$sha_short" >> "$GITHUB_ENV"
+          url="https://github.com/${{ github.event.repository.full_name }}/$converted_ref/commits/$sha";
           echo "url=https://github.com/${{ github.event.repository.full_name }}/$converted_ref/commits/$sha" >> "$GITHUB_ENV"
           echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
           echo $url
+
     - name: Declare variables based on Push event for Linux
       if: ${{  !cancelled() && runner.os == 'Linux' && github.event_name == 'push' }}
       shell: bash
