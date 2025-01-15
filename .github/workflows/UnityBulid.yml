@@ -120,8 +120,8 @@ jobs:
           WEBDAV_URL: ${{ secrets.WEBDAV_ADDRESS }}        
           WEBDAV_USERNAME: ${{ secrets.WEBDAV_USERNAME }}  
           WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}  
-          FILE_PATH: "/${{ steps.current-time.outputs.formattedTime}}"
-          TARGET_DIR: "./${{matrix.targetPlatform}}.zip"
+          FILE_PATH: "./${{matrix.targetPlatform}}.zip"
+          TARGET_DIR: "/${{ steps.current-time.outputs.formattedTime}}"
         run: |
           $webdavUrl = $env:WEBDAV_URL.TrimEnd('/')
           $username = $env:WEBDAV_USERNAME
