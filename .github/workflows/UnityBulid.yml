@@ -128,17 +128,23 @@ jobs:
           $password = $env:WEBDAV_PASSWORD
           $filePath = $env:FILE_PATH
           $targetDir = $env:TARGET_DIR.TrimStart('/')
-          
+      
+          # 创建 URI 对象，确保正确拼接
           $baseUri = [System.Uri]::new($webdavUrl)
-          $targetDirUri = [System.Uri]::new($baseUri, $targetDir + '/') 
+          $targetDirUri = [System.Uri]::new($baseUri, $targetDir + '/')
           $fileUri = [System.Uri]::new($targetDirUri, (Split-Path -Leaf $filePath))  
-          Write-Output "$targetDirUri"
-          Write-Output "$fileUri"
+      
+          Write-Host "Target Directory URI: $targetDirUri"
+          Write-Host "File URI: $fileUri"
+      
+          # 创建凭据
           $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
-          
+      
           try {
               Write-Host "Checking if directory exists..."
+      
               try {
+                  # 尝试发送 HEAD 请求检查目录
                   $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method Head -ErrorAction Stop
                   if ($response.StatusCode -eq 200) {
                       Write-Host "Directory exists."
@@ -146,6 +152,7 @@ jobs:
               } catch [System.Net.WebException] {
                   if ($_.Exception.Response.StatusCode -eq 404) {
                       Write-Host "Directory does not exist, creating it..."
+                      # 如果目录不存在，尝试创建目录
                       Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method MKCOL -ErrorAction Stop
                       Write-Host "Directory created successfully."
                   } else {
@@ -153,7 +160,8 @@ jobs:
                       exit 1
                   }
               }
-          
+      
+              # 上传文件
               Write-Host "Uploading file to WebDAV..."
               Invoke-WebRequest -Uri $fileUri.AbsoluteUri -Credential $credentials -Method Put -InFile $filePath -ErrorAction Stop
               Write-Host "File uploaded successfully."
