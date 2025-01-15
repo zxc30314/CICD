@@ -18,15 +18,17 @@ jobs:
 
     - name: Declare some variables
       if: ${{ !cancelled() }}
+      shell: powershell
       run: |
-        if [[ "$RUNNER_OS" == "Windows" ]]; then
-          commit_message=$(git log -1 --no-merges --pretty=%B)
-          echo "commit_message=$commit_message" >> $GITHUB_ENV
-        else
-          commit_message=$(git log -1 --no-merges --pretty=%B)
-          echo "commit_message=$commit_message" >> $GITHUB_ENV
-        fi
-
+        if ($env:RUNNER_OS -eq "Windows") {
+            # Windows 环境中的 PowerShell 语法
+            $commit_message = $(git log -1 --no-merges --pretty=%B)
+            echo "commit_message=$commit_message" >> $env:GITHUB_ENV
+        } else {
+            # Linux 环境中的 Bash 语法
+            commit_message=$(git log -1 --no-merges --pretty=%B)
+            echo "commit_message=$commit_message" >> $GITHUB_ENV
+        }
     - name: Display the commit message
       run: |
         echo "The commit message is: $commit_message"
