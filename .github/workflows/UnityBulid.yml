@@ -143,6 +143,7 @@ jobs:
                       Write-Host "Directory exists."
                   }
               } catch [System.Net.WebException] {
+                 Write-Host "WebException..."
                   if ($_.Exception.Response.StatusCode -eq 404) {
                       Write-Host "Directory does not exist, creating it..."
                       try {
