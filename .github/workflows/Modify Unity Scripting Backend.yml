@@ -15,23 +15,27 @@ jobs:
 
     - name: Modify ProjectSettings.asset file
       run: |
-        ls -Force ${env.PROJECT_PATH}
-        $relativePath = "ProjectSettings\\ProjectSettings.asset"
-        $fileContent = Get-Content -Path $relativePath
+        # 使用相对路径读取文件内容
+        $filePath = "ProjectSettings\\ProjectSettings.asset"
         
-        # 输出文件内容
-        Write-Output "File content:"
-        Write-Output $fileContent
-        
-        # 执行替换操作
-        $fileContent = $fileContent -replace '(scriptingBackend:\s*)(Standalone:\s*)0', '$1$2 1'
-        
-        # 输出修改后的内容
-        Write-Output "Modified content:"
-        Write-Output $fileContent
+        # 加载 YAML 文件
+        $yamlContent = Get-Content -Path $filePath -Raw | ConvertFrom-Yaml
 
-        # 保存修改后的内容
-        Set-Content -Path $relativePath -Value $fileContent
+        # 输出文件内容（调试用）
+        Write-Output "Original content:"
+        Write-Output $yamlContent
+
+        # 修改 Standalone 值
+        if ($yamlContent.PlayerSettings.scriptingBackend.Standalone -eq 0) {
+          $yamlContent.PlayerSettings.scriptingBackend.Standalone = 1
+        }
+
+        # 输出修改后的内容（调试用）
+        Write-Output "Modified content:"
+        Write-Output $yamlContent
+
+        # 将修改后的内容保存回 YAML 文件
+        $yamlContent | ConvertTo-Yaml | Set-Content -Path $filePath
       shell: pwsh
       env:
         PROJECT_PATH: ${{ secrets.PROJECT_PATH }}  # 通过 GitHub Secrets 管理项目路径
