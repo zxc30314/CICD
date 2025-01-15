@@ -92,4 +92,4 @@ jobs:
     - name: Display the commit message
       run: |
         echo "The commit message is: $commit_message"
-        echo "evet name $github.event_name"
+        echo "Event name: ${{ github.event_name }}"
