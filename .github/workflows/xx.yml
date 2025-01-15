@@ -71,7 +71,7 @@ jobs:
           Write-Host "commit_message=$commit_message"
           echo "commit_message=$commit_message" >> $env:GITHUB_ENV
           $headers = @{ "Authorization" = "Bearer $($env:ACCESS_TOKEN)" }
-          Write-Host "Headers: $headers"
+          Write-Host "Headers: $(ConvertTo-Json $headers)"
     
           # 处理 pull request 事件
           if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
