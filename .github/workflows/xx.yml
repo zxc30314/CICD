@@ -18,14 +18,14 @@ jobs:
 
 
     - name: Declare some variables for Linux
-      if: ${{ runner.os == 'Linux' }}
+      if: ${{ !cancelled() && runner.os == 'Linux' }}
       shell: bash
       run: |
         commit_message=$(git log -1 --no-merges --pretty=%B)
         echo "commit_message=$commit_message" >> $GITHUB_ENV
 
     - name: Declare variables based on event type for Linux
-      if: ${{ runner.os == 'Linux' }}
+      if: ${{  !cancelled() && runner.os == 'Linux' }}
       shell: bash
       run: |
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
@@ -47,14 +47,14 @@ jobs:
         fi
         
     - name: Declare some variables for Windows
-      if: ${{ runner.os == 'Windows' }}
+      if: ${{ !cancelled() && runner.os == 'Windows' }}
       shell: powershell
       run: |
         $commit_message = $(git log -1 --no-merges --pretty=%B)
         echo "commit_message=$commit_message" >> $env:GITHUB_ENV
 
     - name: Declare variables based on event type for Windows
-      if: ${{ runner.os == 'Windows' }}
+      if: ${{ !cancelled() && runner.os == 'Windows' }}
       shell: powershell  # 使用 PowerShell 作为 shell
       run: |
         if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
