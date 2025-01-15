@@ -47,6 +47,7 @@ env:
   SOME_ENV_VAR: ${{ github.event.inputs.target }}
   SCRIPTING_BACKEND: ${{ github.event.inputs.scripting_backend }}
 jobs:
+
   test:
     uses: ./.github/workflows/Test runner.yml
     secrets: inherit
@@ -61,10 +62,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ${{ github.event.inputs.scripting_backend == 'mono' && 'ubuntu-latest' || 'windows-latest' }}
-            targetPlatform: ${{ github.event.inputs.build_android == 'true' && 'Android' || '' }}
-          - os: ${{ github.event.inputs.scripting_backend == 'mono' && 'ubuntu-latest' || 'windows-latest' }}
-            targetPlatform: ${{ github.event.inputs.build_pc == 'true' && 'StandaloneWindows64' || '' }}
+          - os: Linux
+            targetPlatform: Android
+          - os: Windows
+            targetPlatform: StandaloneWindows64
 
          # - StandaloneOSX
          # - StandaloneWindows
@@ -101,6 +102,16 @@ jobs:
         with:
             ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
             
+      - name: Build Project
+        shell: pwsh
+        run: |
+              if ($env:SCRIPTING_BACKEND -eq "il2cpp") {
+                Write-Host "Building with IL2CPP on $($env:RUNNER_OS) for $($env:TARGETPLATFORM)"
+                /opt/unity/Editor/Unity -batchmode -nographics -quit -projectPath $env:PROJECT_PATH -buildTarget $env:TARGETPLATFORM -executeMethod BuildScript.PerformBuild -ScriptingBackend IL2CPP
+              } else {
+                Write-Host "Building with Mono on $($env:RUNNER_OS) for $($env:TARGETPLATFORM)"
+                /opt/unity/Editor/Unity -batchmode -nographics -quit -projectPath $env:PROJECT_PATH -buildTarget $env:TARGETPLATFORM -executeMethod BuildScript.PerformBuild -ScriptingBackend Mono
+              }          
       # https://github.com/game-ci/unity-builder/releases/
 
       - uses: game-ci/unity-builder@v4
