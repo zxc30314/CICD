@@ -47,9 +47,8 @@ jobs:
         Write-Output "::set-output name=url::$url"
         Write-Output "::set-output name=username::$username"
         Write-Output "::set-output name=commit_message::$commit_message"
-        Write-Output "::set-output name=commit_message::$commit_message"
+        
         Write-Host "Commit Message: $commit_message"
-        Write-Host "Short sha: $sha_short"
         Write-Host "Short sha: $sha_short"
         Write-Host "username: $username"
         Write-Host "url: $url"
