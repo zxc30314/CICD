@@ -14,7 +14,6 @@ jobs:
 
     - name: Modify ProjectSettings.asset file
       run: |
-       Write-Output ${{env.PROJECT_PATH}}
         $projectSettingsFilePath = "${{env.PROJECT_PATH}}\\ProjectSettings\\ProjectSettings.asset"
         $fileContent = Get-Content -Path $projectSettingsFilePath
         $fileContent = $fileContent -replace '(scriptingBackend:\s*)(Standalone:\s*)0', '$1$2 1'
