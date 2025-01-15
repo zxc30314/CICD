@@ -104,12 +104,27 @@ jobs:
             
       - name: Modify ProjectSettings.asset file
         run: |
-          $projectSettingsFilePath = "${{ env.PROJECT_PATH }}\\ProjectSettings\\ProjectSettings.asset"
-          $fileContent = Get-Content -Path $projectSettingsFilePath
-          $fileContent = $fileContent -replace '(scriptingBackend:\s*)(Standalone:\s*)0', '$1$2 1'
-          Write-Output "Modified content:"
-          Write-Output $fileContent
-          Set-Content -Path $projectSettingsFilePath -Value $fileContent
+         $projectSettingsFilePath = "${{ env.PROJECT_PATH }}\\ProjectSettings\\ProjectSettings.asset"
+            
+            # 获取文件内容
+            $fileContent = Get-Content -Path $projectSettingsFilePath
+        
+            # 读取 SCRIPTING_BACKEND 环境变量并根据它决定新的值
+            $scriptingBackendValue = if ($env:SCRIPTING_BACKEND -eq 'il2cpp') { 1 } else { 0 }
+        
+            # 输出调试信息
+            Write-Output "SCRIPTING_BACKEND: $env:SCRIPTING_BACKEND"
+            Write-Output "New Standalone value: $scriptingBackendValue"
+        
+            # 替换 'Standalone: 0' 为 'Standalone: 1' 或 'Standalone: 0'，根据 SCRIPTING_BACKEND 值
+            $fileContent = $fileContent -replace '(scriptingBackend:\s*)(Standalone:\s*)0', "`$1`$2 $scriptingBackendValue"
+        
+            # 输出修改后的内容
+            Write-Output "Modified content:"
+            Write-Output $fileContent
+        
+            # 保存修改后的内容
+            Set-Content -Path $projectSettingsFilePath -Value $fileContent
         shell: pwsh
       
       # https://github.com/game-ci/unity-builder/releases/
