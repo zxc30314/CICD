@@ -57,7 +57,7 @@ jobs:
             Library-
       
       - name: Get Commit Info
-        uses: zxc30314/git-commit-info@v1
+        uses: zxc30314/git-commit-info@main
         with:
             ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       # https://github.com/game-ci/unity-builder/releases/
