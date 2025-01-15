@@ -144,7 +144,7 @@ jobs:
           try {
               $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method Head -ErrorAction Stop
               Write-Host "Directory exists."
-          } catch [System.Net.WebException] {
+          } catch  {
               if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 404) {
                   Write-Host "Directory does not exist, creating it..."
                   try {
