@@ -47,6 +47,27 @@ jobs:
           echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
           echo "url=https://github.com/${{ github.event.repository.full_name }}/commit/$sha" >> "$GITHUB_ENV"
         fi
+    - name: Declare variables for Windows
+      if: ${{!cancelled() && runner.os == 'Windows' }}
+      shell: powershell
+      run: |
+        $commit_message = $(git log -1 --no-merges --pretty=%B)
+        echo "commit_message=$commit_message" >> $env:GITHUB_ENV
+        
+        if ($env:GITHUB_EVENT_NAME -eq "push") {
+            $sha = $env:GITHUB_SHA
+            $sha_short = git rev-parse --short $sha
+            Write-Host "sha_short=$sha_short" >> $env:GITHUB_ENV
+            $url = "https://github.com/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commit/$sha"
+            Write-Host "url=$url" >> $env:GITHUB_ENV
+            
+            # Fetch username from GitHub API
+            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$sha" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
+            Write-Host "username=$username" >> $env:GITHUB_ENV
+        }
+        
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} 
         
     - name: Declare some variables for Windows
       if: ${{ !cancelled() && runner.os == 'Windows' }}
