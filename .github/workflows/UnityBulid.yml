@@ -77,11 +77,16 @@ jobs:
           
       - name: Zip build file 
         run: |
-          $source = "./${{ matrix.targetPlatform }}"
-          $destination = "./${{ matrix.targetPlatform }}.zip"
-          Compress-Archive -Path $source -DestinationPath $destination
-          
-
+            $sourcePath = "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}"
+            $destinationPath = "${{ matrix.targetPlatform }}.zip"
+        
+            if (-Not (Test-Path -Path $sourcePath)) {
+                Write-Error "Source path '$sourcePath' does not exist."
+                exit 1
+            }
+        
+            Compress-Archive -Path "$sourcePath\*" -DestinationPath $destinationPath
+            Write-Host "Build contents zipped to $destinationPath"
     
       - name: Get current time
         uses: josStorer/get-current-time@v2
