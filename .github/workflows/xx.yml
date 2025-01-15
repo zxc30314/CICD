@@ -57,7 +57,7 @@ jobs:
             $sha = $env:GITHUB_SHA
             $sha_short = git rev-parse --short $sha
             Write-Host "sha_short=$sha_short" >> $env:GITHUB_ENV
-            $url = "https://github.com/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commit/$sha"
+            $url = "https://github.com/${{ github.event.repository.full_name }}/commit/$sha"
             Write-Host "url=$url" >> $env:GITHUB_ENV
             
             # Fetch username from GitHub API using Invoke-RestMethod
@@ -65,7 +65,7 @@ jobs:
                 "Authorization" = "Bearer $env:ACCESS_TOKEN"
                 "Accept" = "application/vnd.github.v3+json"
             }
-            $response = Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$sha" -Headers $authHeader
+            $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha" -Headers $authHeader
             $username = $response.author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
         }
@@ -109,7 +109,7 @@ jobs:
             $url = "https://github.com/${{ github.event.repository.full_name }}/$converted_ref/commits/$sha"
             Write-Host "url=$url" >> $env:GITHUB_ENV
            # 获取提交的用户名
-            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$sha" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
+            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
           }
       
@@ -119,7 +119,7 @@ jobs:
             Write-Host "sha_short=$sha_short" >> $env:GITHUB_ENV
             $url = "https://github.com/${{ github.event.repository.full_name }}/commit/$env:GITHUB_SHA"
             Write-Host "url=$url" >> $env:GITHUB_ENV
-            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$env:GITHUB_SHA" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
+            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$env:GITHUB_SHA" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
           }
       env:
