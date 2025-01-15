@@ -18,7 +18,6 @@ jobs:
 
     - name: Declare some variables
       if: ${{ !cancelled() }}
-      shell: bash
       run: |
         if [[ "$RUNNER_OS" == "Windows" ]]; then
           commit_message=$(git log -1 --no-merges --pretty=%B)
