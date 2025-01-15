@@ -76,6 +76,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           
       - name: Zip build file 
+        shell: pwsh
         run: |
             $sourcePath = "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}"
             $destinationPath = "${{ matrix.targetPlatform }}.zip"
