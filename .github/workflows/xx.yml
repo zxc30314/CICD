@@ -53,7 +53,6 @@ jobs:
       run: |
         $commit_message = $(git log -1 --no-merges --pretty=%B)
         echo "commit_message=$commit_message" >> $env:GITHUB_ENV
-        
         if ($env:GITHUB_EVENT_NAME -eq "push") {
             $sha = $env:GITHUB_SHA
             $sha_short = git rev-parse --short $sha
@@ -61,8 +60,13 @@ jobs:
             $url = "https://github.com/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commit/$sha"
             Write-Host "url=$url" >> $env:GITHUB_ENV
             
-            # Fetch username from GitHub API
-            $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$sha" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
+            # Fetch username from GitHub API using Invoke-RestMethod
+            $authHeader = @{
+                "Authorization" = "Bearer $env:ACCESS_TOKEN"
+                "Accept" = "application/vnd.github.v3+json"
+            }
+            $response = Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$sha" -Headers $authHeader
+            $username = $response.author.login
             Write-Host "username=$username" >> $env:GITHUB_ENV
         }
         
