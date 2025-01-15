@@ -106,7 +106,9 @@ jobs:
         run: |
           $projectSettingsFilePath = "${{ env.PROJECT_PATH }}\\ProjectSettings\\ProjectSettings.asset"
           $fileContent = Get-Content -Path $projectSettingsFilePath
-          $fileContent = $fileContent -replace '(scriptingBackend:\s*)(Standalone:\s*)0', '$1$21'
+          $fileContent = $fileContent -replace '(scriptingBackend:\s*)(Standalone:\s*)0', '$1$2 1'
+          Write-Output "Modified content:"
+          Write-Output $fileContent
           Set-Content -Path $projectSettingsFilePath -Value $fileContent
         shell: pwsh
       
