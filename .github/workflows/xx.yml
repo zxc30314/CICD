@@ -1,17 +1,17 @@
 name: Git Commit Info
 
 on:
-  pull_request: 
-    types:
-      - opened
-      - synchronize
-    branches: 
-      - 'main'
   push:
+    branches:
+      - main
 
 jobs:
   declare_variables:
-    runs-on: Linux
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [Windows, Linux]
 
     steps:
     - name: Checkout repository
@@ -19,10 +19,15 @@ jobs:
 
     - name: Declare some variables
       if: ${{ !cancelled() }}
+      shell: bash
       run: |
-        $commit_message = $(git log -1 --no-merges --pretty=%B)
-        echo "commit_message=$commit_message" >> $env:GITHUB_ENV
-
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          commit_message=$(git log -1 --no-merges --pretty=%B)
+          echo "commit_message=$commit_message" >> $GITHUB_ENV
+        else
+          commit_message=$(git log -1 --no-merges --pretty=%B)
+          echo "commit_message=$commit_message" >> $GITHUB_ENV
+        fi
 
     - name: Display the commit message
       run: |
