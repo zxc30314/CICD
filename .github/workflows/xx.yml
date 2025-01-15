@@ -58,7 +58,6 @@ jobs:
       shell: powershell  # 使用 PowerShell 作为 shell
       run: |
         if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
-          # 处理 pull request 事件
           $branch_ref = $env:GITHUB_REF -replace '^refs/heads/', ''
           $converted_ref = ($branch_ref -replace '^refs/pull/(\d+)/merge$', 'pull/$1')
           $sha = $env:GITHUB_EVENT_PULL_REQUEST_HEAD_SHA
@@ -70,7 +69,6 @@ jobs:
           $username = (Invoke-RestMethod -Uri "https://api.github.com/repos/$($env:GITHUB_EVENT_REPOSITORY_FULL_NAME)/commits/$sha" -Headers @{ "Authorization" = "Bearer $env:ACCESS_TOKEN" }).author.login
           Write-Host "username=$username" >> $env:GITHUB_ENV
         } elseif ($env:GITHUB_EVENT_NAME -eq "push" -and -not $env:url) {
-          # 处理 push 事件
           $sha_short = git rev-parse --short $env:GITHUB_SHA
           $sha = $env:GITHUB_SHA
           Write-Host "sha_short=$sha_short" >> $env:GITHUB_ENV
