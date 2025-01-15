@@ -119,11 +119,11 @@ jobs:
           username: GitHub
           embed-author-name: ${{github.event.sender.login}}
           embed-author-url: ${{github.event.sender.html_url}}
-          embed-author-icon-url: ${{github.event.sender.avatar_url}}
+          embed-author-icon-url: ${{github.event.sender.avatar_url}}$
 
       - name: Get current job log URL
         if: ${{failure()}}
-        uses: Tiryoh/gha-jobid-action@v1
+        uses: zxc30314/gha-jobid-action@main
         id: jobs
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
