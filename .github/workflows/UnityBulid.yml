@@ -57,7 +57,10 @@ jobs:
             Library-${{ matrix.projectPath }}-
             Library-
       # https://github.com/game-ci/unity-builder/releases/
-   
+    
+      - name: Get Git Commit Info
+        uses: ./.github/workflows/Get Git Commit Info.yml
+      
       - uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -75,8 +78,7 @@ jobs:
         if: ${{ matrix.os == 'Linux' }}
         run: zip -r "${{ matrix.targetPlatform }}.zip" "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}"   
           
-      - name: Get Git Commit Info
-        uses: ./.github/workflows/Get Git Commit Info.yml
+
     
       - name: Get current time
         uses: josStorer/get-current-time@v2
