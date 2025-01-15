@@ -45,7 +45,7 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
   SOME_ENV_VAR: ${{ github.event.inputs.target }}
-
+  SCRIPTING_BACKEND: ${{ github.event.inputs.scripting backend }}
 jobs:
   test:
     uses: ./.github/workflows/Test runner.yml
@@ -110,6 +110,8 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          buildMethod: UnityBuilderAction.BuildScript.Build
+          customParameters: -setScriptingBackend ${{env.SCRIPTING_BACKEND}}
           
       - name: Zip build file 
         shell: pwsh
