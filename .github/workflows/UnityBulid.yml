@@ -21,12 +21,23 @@ on:
         options:
           - build
           - failure test
-      extra_features:
-        description: 'Select additional features (if any)'
+      Useil2cpp:
+        description: 'il2cpp'
         required: false
-        type: string
-        default: ''
-        
+        type: boolean
+        default: true
+      build pc:
+        description: 'PC'
+        required: false
+        type: boolean
+        default: true
+      build android:
+        description: 'Android'
+        required: false
+        type: boolean
+        default: true
+      environment:
+          type: environment
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
