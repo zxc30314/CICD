@@ -134,7 +134,7 @@ jobs:
           $targetDirUri = [System.Uri]::new($baseUri, $targetDir + '/')
           $fileUri = [System.Uri]::new($targetDirUri, (Split-Path -Leaf $filePath))  
       
-          Write-Host "Target Directory URI: $targetDirUri"
+          Write-Host "Target Directory URI: $targetDirUri.AbsoluteUri"
           Write-Host "File URI: $fileUri"
       
           # 创建凭据
