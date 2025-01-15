@@ -1,6 +1,7 @@
 name: Git Commit Info
 
 on:
+  push:
   pull_request:
     types:
       - opened
