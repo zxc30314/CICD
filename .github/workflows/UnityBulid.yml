@@ -21,6 +21,12 @@ on:
         options:
           - build
           - failure test
+      extra_features:
+        description: 'Select additional features (if any)'
+        required: false
+        type: string
+        default: ''
+        
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
