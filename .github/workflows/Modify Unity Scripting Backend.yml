@@ -16,7 +16,7 @@ jobs:
     - name: Modify ProjectSettings.asset file
       run: |
         ls -Force ${env.PROJECT_PATH}
-        $projectSettingsFilePath = "${env.PROJECT_PATH}\\ProjectSettings\\ProjectSettings.asset"
+        $projectSettingsFilePath = "${env.PROJECT_PATH}\ProjectSettings\ProjectSettings.asset"
         # 检查路径是否正确
         Write-Output "Project Settings file path: $projectSettingsFilePath"
         $fileContent = Get-Content -Path $projectSettingsFilePath
