@@ -60,6 +60,7 @@ jobs:
       
       - name: Get Commit Info
         uses: zxc30314/git-commit-info@main
+        id: info
         with:
             ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
             
@@ -108,7 +109,7 @@ jobs:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
           embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
-          embed-description: "[``${{env.sha_short}}``](${{env.url}}) ${{env.commit_message}} -${{env.username}}"
+          embed-description: "[``${{steps.info.sha_short}}``](${{steps.info.url}}) ${{steps.info.commit_message}} -${{steps.info.username}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
@@ -131,7 +132,7 @@ jobs:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} failure"
           embed-url: "${{steps.jobs.outputs.html_url}}"
-          embed-description: "[``${{env.sha_short}}``](${{env.url}}) ${{env.commit_message}} -${{env.username}}"
+          embed-description: "[``${{steps.info.sha_short}}``](${{steps.info.url}}) ${{steps.info.commit_message}} -${{steps.info.username}}"
           embed-color: 16711680
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
