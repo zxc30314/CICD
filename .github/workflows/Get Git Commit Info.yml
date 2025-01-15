@@ -99,7 +99,7 @@ jobs:
       shell: powershell
       run: |
           $sha= "${{ github.sha }}"
-          $sha_short = git rev-parse --short $env:GITHUB_SHA
+          $sha_short = git rev-parse --short $sha
           $url = "https://github.com/${{ github.event.repository.full_name }}/commit/$sha"
           Write-Host "url=$url" >> $env:GITHUB_ENV
           $authHeader = @{
