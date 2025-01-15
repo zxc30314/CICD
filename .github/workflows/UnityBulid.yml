@@ -70,7 +70,7 @@ jobs:
       - name: zip bulid file
         run: |
            if [ "${{ matrix.os }}" == "Windows" ]; then
-               Compress-Archive -Path "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}/*" -DestinationPath "${{ matrix.targetPlatform }}.zip"
+               pwsh -Command "Compress-Archive -Path '${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}/*' -DestinationPath '${{ matrix.targetPlatform }}.zip'"
            elif [ "${{ matrix.os }}" == "Linux" ]; then
                zip -r "${{ matrix.targetPlatform }}.zip" "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}"
                 
