@@ -12,35 +12,44 @@ on:
     branches:
       - 'main'
   workflow_dispatch:
-   inputs:
-    version:
-      required: true
-      type: string
+    inputs:
+      target:
+        description: 'Choose a target'
+        required: true
+        default: 'build'
+        type: choice
+        options:
+          - build
+          - failure test
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_PATH: .
-
+  SOME_ENV_VAR: ${{ github.event.inputs.target }}
+  SCRIPTING_BACKEND: ${{ github.event.inputs.scripting_backend }}
 jobs:
-  test:
-    uses: ./.github/workflows/Test runner.yml
-    secrets: inherit
 
+ # test:
+ #   uses: ./.github/workflows/Test runner.yml
+ #   secrets: inherit
+    
   build:
-    needs: [test]
+   # needs: [test]
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: self-hosted
+    runs-on: [ self-hosted, "${{ matrix.os }}" ]
     environment: 
       name: production
     strategy:
       fail-fast: false
       matrix:
-        targetPlatform:
+        include:
+          - os: Linux
+            targetPlatform: Android
+          - os: Windows
+            targetPlatform: StandaloneWindows64
          # - StandaloneOSX
          # - StandaloneWindows
-          - StandaloneWindows64
          # - StandaloneLinux64
          # - iOS
-         # - Android
          # - WebGL
     steps:
       - uses: actions/checkout@v3
@@ -55,11 +64,23 @@ jobs:
           restore-keys: |
             Library-${{ matrix.projectPath }}-
             Library-
-      
+            
+      - name: Check for errors
+        shell: pwsh
+        run: |
+          # Example condition where we trigger an error
+          if ($env:SOME_ENV_VAR -eq "failure test") {
+              Write-Host "Error: Something went wrong"
+              exit 1 # or throw "Something went wrong"
+          }
+          
       - name: Get Commit Info
+        if: ${{ !cancelled() }}
         uses: zxc30314/git-commit-info@main
+        id: info
         with:
             ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+            
       # https://github.com/game-ci/unity-builder/releases/
       - uses: game-ci/unity-builder@v4
         env:
@@ -69,10 +90,23 @@ jobs:
         with:
           projectPath: ${{ env.PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          buildMethod: UnityBuilderAction.BuildScript.Build
+          customParameters: -setScriptingBackend ${{env.SCRIPTING_BACKEND}}
           
-      - name: zip bulid file
-        run: zip -r '${{matrix.targetPlatform}}.zip' ${{env.PROJECT_PATH}}/build/${{matrix.targetPlatform}}
+      - name: Zip build file 
+        shell: pwsh
+        run: |
+            $sourcePath = "${{ env.PROJECT_PATH }}/build/${{ matrix.targetPlatform }}"
+            $destinationPath = "${{ matrix.targetPlatform }}.zip"
         
+            if (-Not (Test-Path -Path $sourcePath)) {
+                Write-Error "Source path '$sourcePath' does not exist."
+                exit 1
+            }
+        
+            Compress-Archive -Path "$sourcePath\*" -DestinationPath $destinationPath
+            Write-Host "Build contents zipped to $destinationPath"
+    
       - name: Get current time
         uses: josStorer/get-current-time@v2
         id: current-time
@@ -81,69 +115,59 @@ jobs:
           utcOffset: "+08:00"
           
       - name: Upload to WebDAV
-        uses: bxb100/action-upload-webdav@v1
-        with:
-          webdav_address: ${{ secrets.WEBDAV_ADDRESS }}
-          webdav_username: ${{ secrets.WEBDAV_USERNAME }}
-          webdav_password: ${{ secrets.WEBDAV_PASSWORD }}
-          webdav_upload_path: /${{ steps.current-time.outputs.formattedTime}}
-          files: '${{matrix.targetPlatform}}.zip'
-
-      - name: Declare some variables
-        if: ${{ !cancelled()}}
-        shell: bash
+        shell: pwsh
+        env:
+          WEBDAV_URL: ${{ secrets.WEBDAV_ADDRESS }}        
+          WEBDAV_USERNAME: ${{ secrets.WEBDAV_USERNAME }}
+          WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}
+          FILE_PATH: "./${{matrix.targetPlatform}}.zip"
+          TARGET_DIR: "/${{ steps.current-time.outputs.formattedTime}}"
         run: |
-          commit_message="$(git log -1 --no-merges --pretty=%B)"
-          echo "commit_message=$commit_message" >> $GITHUB_ENV
-
-      - name: Declare some variables on pr
-        if: ${{ !cancelled() && github.event_name == 'pull_request'}}
-        shell: bash
-        run: |
-          branch_ref="${GITHUB_REF#refs/heads/}"
-          converted_ref=$(echo "$branch_ref" | sed -n 's|refs/pull/\([0-9]*\)/merge|pull/\1|p')
-          sha=${{github.event.pull_request.head.sha }}
-          sha_short=$(echo "$sha" | cut -c 1-7)
-          echo "sha_short=$env.sha_short"
-          echo "sha_short=$sha_short" >> "$GITHUB_ENV"
-          echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
-          echo "url=https://github.com/${{github.event.repository.full_name}}/$converted_ref/commits/$sha" >> "$GITHUB_ENV"
-
-      - name: Declare some variables on push
-        if: ${{ !cancelled() && env.url=='' }}
-        shell: bash
-        run: |
-          sha_short=$(git rev-parse --short "$GITHUB_SHA")
-          sha=${{ github.sha }}
-          echo "sha_short=$sha_short" >> "$GITHUB_ENV"
-          echo "username=$(curl -H 'Accept: application/vnd.github.v3+json' -H "Authorization: Bearer ${{secrets.ACCESS_TOKEN}}" https://api.github.com/repos/${{ github.event.repository.full_name }}/commits/$sha | jq -r '.author.login')" >> "$GITHUB_ENV"
-          echo "url=https://github.com/${{github.event.repository.full_name}}/commit/$sha" >> "$GITHUB_ENV"
-
-      - name: Print Variables
-        run: |
-          echo "sha_short=$env.sha_short"
-          echo "message=$env.commit_message"
-          echo "username=$env.username"
-          echo "url=$env.url"
-
+          $webdavUrl = $env:WEBDAV_URL
+          $username = $env:WEBDAV_USERNAME
+          $password = $env:WEBDAV_PASSWORD
+          $filePath = $env:FILE_PATH
+          $targetDir = $env:TARGET_DIR
+          # 创建 WebClient 实例
+          $webClient = New-Object System.Net.WebClient
+          $webClient.Credentials = New-Object System.Net.NetworkCredential($username, $password)
+          try {
+              Write-Host "Checking if directory exists: $targetDir"
+              $checkDirUrl = "$webdavUrl$targetDir"
+              try {
+                  $webClient.OpenRead($checkDirUrl) | Out-Null
+                  Write-Host "Directory exists."
+              } catch {
+                  Write-Host "Directory does not exist, creating directory..."
+                  $webClient.UploadString("$webdavUrl$targetDir", "MKCOL", "")
+                  Write-Host "Directory created."
+              }
+              Write-Host "Uploading file to WebDAV..."
+              $webClient.UploadFile("$webdavUrl$targetDir/$(Split-Path -Leaf $filePath)", "PUT", $filePath)
+              Write-Host "File uploaded successfully."
+          } catch {
+              Write-Host "Error: $($_.Exception.Message)"
+              exit 1
+          }
+          
       - name: Send success message to Discord
         if: ${{success()}}
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] has been deployed."
+          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{matrix.targetPlatform}} has been deployed."
           embed-url: "${{secrets.WEBDAV_ADDRESS}}/${{ steps.current-time.outputs.formattedTime}}/${{matrix.targetPlatform}}.zip"
-          embed-description: "[``${{env.sha_short}}``](${{env.url}}) ${{env.commit_message}} -${{env.username}}"
+          embed-description: "[``${{steps.info.outputs.sha_short}}``](${{steps.info.outputs.url}}) ${{steps.info.outputs.commit_message}} -${{steps.info.outputs.username}}"
           embed-color: 7506394
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
           embed-author-name: ${{github.event.sender.login}}
           embed-author-url: ${{github.event.sender.html_url}}
-          embed-author-icon-url: ${{github.event.sender.avatar_url}}
+          embed-author-icon-url: ${{github.event.sender.avatar_url}}$
 
       - name: Get current job log URL
         if: ${{failure()}}
-        uses: Tiryoh/gha-jobid-action@v1
+        uses: zxc30314/gha-jobid-action@main
         id: jobs
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
@@ -154,9 +178,9 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
-          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} failure"
+          embed-title: "[${{github.event.repository.name}}:${{github.ref_name}}] ${{github.workflow}} ${{matrix.targetPlatform}} failure"
           embed-url: "${{steps.jobs.outputs.html_url}}"
-          embed-description: "[``${{env.sha_short}}``](${{env.url}}) ${{env.commit_message}} -${{env.username}}"
+          embed-description: "[``${{steps.info.outputs.sha_short}}``](${{steps.info.outputs.url}}) ${{steps.info.outputs.commit_message}} -${{steps.info.outputs.username}}"
           embed-color: 16711680
           avatar-url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           username: GitHub
