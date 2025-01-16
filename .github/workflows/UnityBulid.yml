@@ -118,79 +118,38 @@ jobs:
         shell: pwsh
         env:
           WEBDAV_URL: ${{ secrets.WEBDAV_ADDRESS }}        
-          WEBDAV_USERNAME: ${{ secrets.WEBDAV_USERNAME }}  
-          WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}  
+          WEBDAV_USERNAME: ${{ secrets.WEBDAV_USERNAME }}
+          WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}
           FILE_PATH: "./${{matrix.targetPlatform}}.zip"
-          TARGET_DIR: "${{ steps.current-time.outputs.formattedTime}}"
+          TARGET_DIR: "/${{ steps.current-time.outputs.formattedTime}}"
         run: |
           $webdavUrl = $env:WEBDAV_URL
-          if (-not $webdavUrl.EndsWith('/')) {
-              $webdavUrl += '/'
-          }
-          
           $username = $env:WEBDAV_USERNAME
           $password = $env:WEBDAV_PASSWORD
           $filePath = $env:FILE_PATH
-          $targetDir = $env:TARGET_DIR.TrimStart('/')
-          $targetDirUri = [System.Uri]::new($webdavUrl + $targetDir + '/')
-          $fileUri = [System.Uri]::new($targetDirUri, (Split-Path -Leaf $filePath))
-          
-          if (-not $username -or -not $password -or -not $filePath -or -not $targetDir) {
-              Write-Host "Error: Missing required environment variables." -ForegroundColor Red
-              exit 1
-          }
-          
-          Write-Host "Target Directory URI: $targetDirUri"
-          Write-Host "File URI: $fileUri"
-          
-          $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
-          
-          Write-Host "Checking if directory exists..."
-          $ErrorActionPreference = "Stop" # 确保捕获异常
+          $targetDir = $env:TARGET_DIR
+          # 创建 WebClient 实例
+          $webClient = New-Object System.Net.WebClient
+          $webClient.Credentials = New-Object System.Net.NetworkCredential($username, $password)
           try {
-              $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method Head -TimeoutSec 30 -ErrorAction SilentlyContinue
-              if ($response) {
-                  if ($response.StatusCode -eq 200) {
-                      Write-Host "Directory exists."
-                  } else {
-                      Write-Host "Unexpected response: $($response.StatusCode)" -ForegroundColor Yellow
-                      exit 1
-                  }
-              } else {
-                  Write-Host "No response received. Directory may not exist." -ForegroundColor Yellow
-                  throw "Directory not found."
+              Write-Host "Checking if directory exists: $targetDir"
+              $checkDirUrl = "$webdavUrl$targetDir"
+              try {
+                  $webClient.OpenRead($checkDirUrl) | Out-Null
+                  Write-Host "Directory exists."
+              } catch {
+                  Write-Host "Directory does not exist, creating directory..."
+                  $webClient.UploadString("$webdavUrl$targetDir", "MKCOL", "")
+                  Write-Host "Directory created."
               }
-          } catch [System.Net.WebException] {
-              if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 404) {
-                  Write-Host "Directory does not exist, creating it..."
-                  try {
-                      $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method MKCOL -TimeoutSec 30 -ErrorAction Stop
-                      Write-Host "Directory created successfully: $($response.StatusCode)"
-                  } catch {
-                      Write-Host "Error creating directory: $($_.Exception.Message)" -ForegroundColor Red
-                      exit 1
-                  }
-              } else {
-                  Write-Host "Unhandled error: $($_.Exception.Message)" -ForegroundColor Red
-                  exit 1
-              }
+              Write-Host "Uploading file to WebDAV..."
+              $webClient.UploadFile("$webdavUrl$targetDir/$(Split-Path -Leaf $filePath)", "PUT", $filePath)
+              Write-Host "File uploaded successfully."
           } catch {
-              Write-Host "General error: $($_.Exception.Message)" -ForegroundColor Red
+              Write-Host "Error: $($_.Exception.Message)"
               exit 1
           }
-
           
-          Write-Host "Uploading file to WebDAV..."
-          try {
-              Invoke-WebRequest -Uri $fileUri.AbsoluteUri -Credential $credentials -Method Put -InFile $filePath -TimeoutSec 30 -ErrorAction Stop
-              Write-Host "File uploaded successfully." -ForegroundColor Green
-          } catch {
-              Write-Host "Error uploading file: $($_.Exception.Message)" -ForegroundColor Red
-              exit 1
-          }
-
-
-
       - name: Send success message to Discord
         if: ${{success()}}
         uses: tsickert/discord-webhook@v5.3.0
