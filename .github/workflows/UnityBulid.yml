@@ -147,8 +147,12 @@ jobs:
           
           Write-Host "Checking if directory exists..."
           try {
-              $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method Head -TimeoutSec 30 -ErrorAction Stop
-              Write-Host "Directory exists."
+              $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method Head -TimeoutSec 30 -ErrorAction SilentlyContinue
+              if ($response.StatusCode -eq 200) {
+                  Write-Host "Directory exists."
+              } else {
+                  throw "Unexpected response: $($response.StatusCode)"
+              }
           } catch [System.Net.WebException] {
               if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 404) {
                   Write-Host "Directory does not exist, creating it..."
@@ -164,6 +168,7 @@ jobs:
                   exit 1
               }
           }
+
           
           Write-Host "Uploading file to WebDAV..."
           try {
