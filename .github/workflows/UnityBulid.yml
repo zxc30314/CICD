@@ -135,6 +135,11 @@ jobs:
           $targetDirUri = [System.Uri]::new($webdavUrl + $targetDir + '/')
           $fileUri = [System.Uri]::new($targetDirUri, (Split-Path -Leaf $filePath))
           
+          if (-not $username -or -not $password -or -not $filePath -or -not $targetDir) {
+              Write-Host "Error: Missing required environment variables." -ForegroundColor Red
+              exit 1
+          }
+          
           Write-Host "Target Directory URI: $targetDirUri"
           Write-Host "File URI: $fileUri"
           
@@ -142,32 +147,33 @@ jobs:
           
           Write-Host "Checking if directory exists..."
           try {
-              $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method Head -ErrorAction Stop
+              $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method Head -TimeoutSec 30 -ErrorAction Stop
               Write-Host "Directory exists."
-          } catch  {
+          } catch [System.Net.WebException] {
               if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 404) {
                   Write-Host "Directory does not exist, creating it..."
                   try {
-                      $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method MKCOL -ErrorAction Stop
+                      $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method MKCOL -TimeoutSec 30 -ErrorAction Stop
                       Write-Host "Directory created successfully: $($response.StatusCode)"
                   } catch {
-                      Write-Host "Error creating directory: $($_.Exception.Message)"
+                      Write-Host "Error creating directory: $($_.Exception.Message)" -ForegroundColor Red
                       exit 1
                   }
               } else {
-                  Write-Host "Unhandled error: $($_.Exception.Message)"
+                  Write-Host "Unhandled error: $($_.Exception.Message)" -ForegroundColor Red
                   exit 1
               }
           }
           
           Write-Host "Uploading file to WebDAV..."
           try {
-              Invoke-WebRequest -Uri $fileUri.AbsoluteUri -Credential $credentials -Method Put -InFile $filePath -ErrorAction Stop
-              Write-Host "File uploaded successfully."
+              Invoke-WebRequest -Uri $fileUri.AbsoluteUri -Credential $credentials -Method Put -InFile $filePath -TimeoutSec 30 -ErrorAction Stop
+              Write-Host "File uploaded successfully." -ForegroundColor Green
           } catch {
-              Write-Host "Error uploading file: $($_.Exception.Message)"
+              Write-Host "Error uploading file: $($_.Exception.Message)" -ForegroundColor Red
               exit 1
           }
+
 
 
       - name: Send success message to Discord
