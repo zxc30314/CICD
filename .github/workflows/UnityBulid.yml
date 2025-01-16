@@ -146,12 +146,19 @@ jobs:
           $credentials = New-Object PSCredential($username, (ConvertTo-SecureString $password -AsPlainText -Force))
           
           Write-Host "Checking if directory exists..."
+          $ErrorActionPreference = "Stop" # 确保捕获异常
           try {
               $response = Invoke-WebRequest -Uri $targetDirUri.AbsoluteUri -Credential $credentials -Method Head -TimeoutSec 30 -ErrorAction SilentlyContinue
-              if ($response.StatusCode -eq 200) {
-                  Write-Host "Directory exists."
+              if ($response) {
+                  if ($response.StatusCode -eq 200) {
+                      Write-Host "Directory exists."
+                  } else {
+                      Write-Host "Unexpected response: $($response.StatusCode)" -ForegroundColor Yellow
+                      exit 1
+                  }
               } else {
-                  throw "Unexpected response: $($response.StatusCode)"
+                  Write-Host "No response received. Directory may not exist." -ForegroundColor Yellow
+                  throw "Directory not found."
               }
           } catch [System.Net.WebException] {
               if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 404) {
@@ -167,6 +174,9 @@ jobs:
                   Write-Host "Unhandled error: $($_.Exception.Message)" -ForegroundColor Red
                   exit 1
               }
+          } catch {
+              Write-Host "General error: $($_.Exception.Message)" -ForegroundColor Red
+              exit 1
           }
 
           
